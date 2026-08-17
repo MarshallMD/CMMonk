@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0B0C0D">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Main Event">
+<title>Main Event</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;800&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0B0C0D; --panel:#15171A; --panel-2:#1D2024;
+    --line:#2A2E33; --line-soft:#212429;
+    --text:#E9E7E3; --mute:#969B9F; --dim:#666C71;
+    --brass:#C8952E; --brass-hi:#EFBB4E; --brass-dim:#6B5019;
+    --brass-wash:rgba(200,149,46,.13);
+    --steel:#5C7A8C; --steel-hi:#7FA5BB;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--ink);color:var(--text);
+    font-family:"Archivo",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-size:15px;line-height:1.4;
+    padding:calc(14px + env(safe-area-inset-top)) 12px calc(96px + env(safe-area-inset-bottom));
+    -webkit-text-size-adjust:100%;
+  }
+  .wrap{max-width:520px;margin:0 auto;}
+
+  header{
+    display:flex;align-items:center;justify-content:space-between;gap:10px;
+    padding-bottom:11px;margin-bottom:14px;border-bottom:1px solid var(--line);
+  }
+  h1{font-weight:800;font-size:20px;letter-spacing:-.02em;margin:0;line-height:1;text-transform:uppercase;}
+  h1 span{color:var(--brass);}
+  .who{
+    font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--dim);text-align:right;line-height:1.3;
+  }
+
+  .block{
+    border:1px solid var(--line);border-radius:6px;background:var(--panel);
+    margin-bottom:14px;overflow:hidden;
+  }
+  .block > h2{
+    font-family:"IBM Plex Mono",monospace;font-size:9px;font-weight:600;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--brass);
+    margin:0;padding:9px 12px;background:var(--panel-2);border-bottom:1px solid var(--line);
+    display:flex;align-items:center;justify-content:space-between;gap:8px;
+  }
+  .pad{padding:12px;}
+
+  /* ---------- level switch ---------- */
+  .lvl{display:flex;gap:0;border:1px solid var(--line);border-radius:5px;overflow:hidden;}
+  .lvl button{
+    appearance:none;border:0;background:var(--ink);color:var(--dim);
+    font-family:"IBM Plex Mono",monospace;font-size:9px;font-weight:600;
+    letter-spacing:.12em;text-transform:uppercase;padding:5px 9px;cursor:pointer;
+  }
+  .lvl button + button{border-left:1px solid var(--line);}
+  .lvl button.on{background:var(--brass);color:#12100B;}
+
+  /* ---------- action economy ---------- */
+  .econ{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;padding:12px;}
+  .slot{
+    border:1px solid var(--line);border-radius:5px;background:var(--ink);
+    padding:9px 6px;text-align:center;min-height:64px;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;
+  }
+  .slot .box{
+    width:22px;height:22px;border:1px solid var(--line);border-radius:4px;
+    display:flex;align-items:center;justify-content:center;flex:none;
+    font-size:14px;line-height:1;color:transparent;
+  }
+  .slot .nm{
+    font-family:"IBM Plex Mono",monospace;font-size:8.5px;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--dim);
+  }
+  .slot.used{border-color:var(--brass);background:var(--brass-wash);}
+  .slot.used .box{background:var(--brass);border-color:var(--brass);color:#12100B;}
+  .slot.used .nm{color:var(--text);}
+  .slot.over{border-color:var(--brass-hi);}
+  .slot.over .box{background:var(--brass-hi);border-color:var(--brass-hi);}
+  .slot.over .nm{color:var(--brass-hi);}
+  .slot.tap{cursor:pointer;}
+  .econ-note{
+    padding:0 12px 12px;font-family:"IBM Plex Mono",monospace;
+    font-size:10px;line-height:1.55;color:var(--dim);
+  }
+  .econ-note b{color:var(--brass-hi);font-weight:600;}
+  .econ-note .warn{color:var(--brass-hi);}
+
+  .focus{
+    display:flex;align-items:center;gap:9px;
+    padding:12px;border-top:1px solid var(--line-soft);
+  }
+  .focus .nm{
+    font-family:"IBM Plex Mono",monospace;font-size:9px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--dim);flex:1;line-height:1.35;
+  }
+  .focus .nm b{
+    display:block;font-size:13px;letter-spacing:.04em;color:var(--brass-hi);
+    font-weight:600;margin-top:2px;
+  }
+  .focus.drained .nm b{color:var(--dim);}
+  .focus.over .nm b{color:var(--brass-hi);}
+  .pips{display:flex;gap:9px;flex:none;}
+  .pip{
+    width:16px;height:16px;border-radius:50%;
+    border:1px solid var(--brass);background:var(--brass);
+  }
+  .pip.out{background:transparent;border-color:var(--line);}
+
+  /* ---------- once-per-rest trackers ---------- */
+  .rests{display:grid;grid-template-columns:1fr 1fr;gap:7px;padding:12px;border-top:1px solid var(--line-soft);}
+  .rest{
+    border:1px solid var(--line);border-radius:5px;background:var(--ink);padding:9px;
+  }
+  .rest .rn{
+    font-family:"IBM Plex Mono",monospace;font-size:8.5px;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--dim);display:block;line-height:1.3;
+  }
+  .rest .rs{font-size:11px;color:var(--mute);display:block;margin-top:3px;line-height:1.3;}
+  .charges{display:flex;gap:6px;margin-top:7px;}
+  .charge{
+    width:19px;height:19px;border-radius:3px;border:1px solid var(--brass);
+    background:var(--brass);cursor:pointer;padding:0;appearance:none;
+  }
+  .charge.spent{background:transparent;border-color:var(--line);}
+
+  /* ---------- loadout ---------- */
+  .eff{border-top:1px solid var(--line-soft);padding:12px;}
+  .eff-top{display:flex;align-items:flex-start;gap:10px;}
+  .eff-name{flex:1;line-height:1.3;}
+  .eff-name b{font-size:14px;font-weight:600;display:block;}
+  .eff-name small{
+    font-family:"IBM Plex Mono",monospace;font-size:9px;letter-spacing:.06em;
+    color:var(--dim);display:block;margin-top:3px;
+  }
+  .sw{
+    width:46px;height:26px;border-radius:13px;border:1px solid var(--line);
+    background:var(--ink);position:relative;flex:none;cursor:pointer;padding:0;appearance:none;
+    transition:background .15s,border-color .15s;
+  }
+  .sw::after{
+    content:"";position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;
+    background:var(--dim);transition:transform .15s,background .15s;
+  }
+  .sw[aria-pressed="true"]{background:var(--brass-wash);border-color:var(--brass);}
+  .sw[aria-pressed="true"]::after{transform:translateX(20px);background:var(--brass);}
+  .eff-list{margin:9px 0 0;padding:0 0 0 15px;font-size:12.5px;line-height:1.55;color:var(--mute);}
+  .eff-list b{color:var(--text);font-weight:600;}
+  .eff-list em{color:var(--brass-hi);font-style:normal;font-weight:600;}
+  .eff.off .eff-list{opacity:.4;}
+
+  .now{
+    display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);
+    border-top:1px solid var(--line);
+  }
+  .now > div{background:var(--panel-2);padding:10px 12px;}
+  .now .k{
+    font-family:"IBM Plex Mono",monospace;font-size:8.5px;letter-spacing:.13em;
+    text-transform:uppercase;color:var(--dim);display:block;
+  }
+  .now .v{font-size:16px;font-weight:600;display:block;margin-top:3px;}
+  .now .v em{color:var(--brass-hi);font-style:normal;}
+
+  /* ---------- attack card ---------- */
+  .card-top{padding:12px;border-bottom:1px solid var(--line-soft);background:var(--panel-2);}
+  .card-top .line{display:flex;align-items:center;justify-content:space-between;gap:8px;}
+  .idx{
+    font-family:"IBM Plex Mono",monospace;font-size:9px;font-weight:600;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--brass);
+  }
+  .kill{
+    appearance:none;border:1px solid var(--line);background:var(--ink);color:var(--dim);
+    width:26px;height:26px;border-radius:5px;font-size:16px;line-height:1;cursor:pointer;padding:0;
+  }
+  .kill.hidden{visibility:hidden;}
+  select{
+    appearance:none;width:100%;margin-top:9px;
+    background:var(--ink);color:var(--text);border:1px solid var(--line);
+    border-radius:5px;padding:9px 30px 9px 10px;font-family:inherit;font-size:14px;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='11' height='7'><path d='M1 1l4.5 4.5L10 1' stroke='%23666C71' stroke-width='1.6' fill='none' stroke-linecap='round'/></svg>");
+    background-repeat:no-repeat;background-position:right 11px center;
+  }
+  select.unset{color:var(--dim);}
+  select:disabled{opacity:.5;}
+
+  /* segmented: what this strike does */
+  .seg{display:flex;gap:0;margin-top:9px;border:1px solid var(--line);border-radius:5px;overflow:hidden;}
+  .seg button{
+    appearance:none;flex:1;border:0;background:var(--ink);color:var(--dim);
+    font-family:"IBM Plex Mono",monospace;font-size:9px;font-weight:600;
+    letter-spacing:.1em;text-transform:uppercase;padding:7px 4px;cursor:pointer;
+  }
+  .seg button + button{border-left:1px solid var(--line);}
+  .seg button.on{background:var(--brass-wash);color:var(--brass-hi);}
+  .seg.locked{opacity:.45;}
+
+  .readout{padding:16px 0 12px;text-align:center;}
+  .readout .n{
+    font-family:"Archivo",sans-serif;font-weight:800;font-size:62px;line-height:.9;
+    letter-spacing:-.03em;display:block;
+  }
+  .readout .n.empty{color:var(--line);}
+  .readout.crit .n{color:var(--brass-hi);}
+  .readout.fumble .n{color:var(--steel);}
+  .readout .lab{
+    font-family:"IBM Plex Mono",monospace;font-size:9px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--dim);margin-top:7px;
+  }
+  .readout .math{
+    font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.03em;
+    color:var(--mute);margin-top:6px;line-height:1.5;padding:0 4px;
+  }
+  .readout .math b{color:var(--text);}
+
+  /* d20 wheel */
+  .wheel-wrap{position:relative;margin:2px -12px 0;}
+  .wheel{
+    display:flex;gap:0;overflow-x:auto;scroll-snap-type:x mandatory;
+    scrollbar-width:none;-ms-overflow-style:none;padding:6px 0;
+  }
+  .wheel::-webkit-scrollbar{display:none;}
+  .tick{
+    appearance:none;flex:none;width:52px;height:52px;scroll-snap-align:center;
+    background:transparent;border:0;color:var(--dim);
+    font-family:"Archivo",sans-serif;font-weight:600;font-size:19px;cursor:pointer;
+    transition:color .12s,transform .12s;padding:0;
+  }
+  .tick.near{color:var(--mute);}
+  .tick.sel{color:var(--text);transform:scale(1.28);font-weight:800;}
+  .tick.sel.hot{color:var(--brass-hi);}
+  .wheel-frame{
+    position:absolute;top:6px;left:50%;transform:translateX(-50%);
+    width:52px;height:52px;border:1px solid var(--line);border-radius:7px;
+    pointer-events:none;transition:border-color .15s;
+  }
+  .wheel-frame.live{border-color:var(--brass);}
+  .fade{position:absolute;top:0;bottom:0;width:56px;pointer-events:none;}
+  .fade.l{left:0;background:linear-gradient(90deg,var(--panel),transparent);}
+  .fade.r{right:0;background:linear-gradient(270deg,var(--panel),transparent);}
+  .wheel-cap{
+    font-family:"IBM Plex Mono",monospace;font-size:9px;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--dim);text-align:center;margin-top:2px;
+  }
+
+  .sect{
+    font-family:"IBM Plex Mono",monospace;font-size:9px;font-weight:600;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--dim);
+    margin:16px 0 7px;padding-top:11px;border-top:1px solid var(--line-soft);
+  }
+  .sect .x2{color:var(--brass-hi);}
+
+  .row{
+    display:flex;align-items:center;gap:9px;padding:7px 0;
+    border-bottom:1px solid var(--line-soft);
+  }
+  .row:last-child{border-bottom:0;}
+  .row .name{flex:1;font-size:13.5px;line-height:1.25;}
+  .row .name b{font-weight:600;display:block;}
+  .row .name small{
+    font-family:"IBM Plex Mono",monospace;font-size:9px;letter-spacing:.05em;
+    color:var(--dim);display:block;margin-top:2px;
+  }
+  .row.muted{opacity:.35;}
+  .row input[type=checkbox]{
+    appearance:none;width:19px;height:19px;flex:none;border:1px solid var(--line);
+    border-radius:4px;background:var(--ink);cursor:pointer;position:relative;margin:0;
+  }
+  .row input[type=checkbox]:checked{background:var(--brass);border-color:var(--brass);}
+  .row input[type=checkbox]:checked::after{
+    content:"\2713";position:absolute;inset:0;display:flex;align-items:center;
+    justify-content:center;color:#12100B;font-size:12px;font-weight:700;
+  }
+  .row input[type=number]{
+    width:58px;flex:none;background:var(--ink);border:1px solid var(--line);
+    border-radius:5px;color:var(--text);font-family:"IBM Plex Mono",monospace;
+    font-size:14px;text-align:center;padding:7px 2px;-moz-appearance:textfield;
+  }
+  .row input[type=number]::-webkit-outer-spin-button,
+  .row input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
+  .row input:disabled{opacity:.4;}
+  .row .pair{display:flex;align-items:center;gap:5px;flex:none;}
+  .row .pair .x{color:var(--dim);font-family:"IBM Plex Mono",monospace;font-size:12px;}
+  .row .die{width:52px;}
+  .row .die.crit{border-color:var(--brass-dim);color:var(--brass-hi);}
+  .row .drop{
+    appearance:none;border:0;background:transparent;color:var(--dim);
+    font-size:15px;cursor:pointer;padding:0 2px;flex:none;
+  }
+  .is-crit .row .die.crit{border-color:var(--brass);}
+
+  .add{
+    appearance:none;width:100%;background:transparent;border:1px dashed var(--line);
+    border-radius:5px;color:var(--dim);font-family:"IBM Plex Mono",monospace;
+    font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;
+    padding:9px;margin-top:9px;cursor:pointer;
+  }
+  .add:active{border-color:var(--brass);color:var(--brass-hi);}
+
+  .note{
+    display:flex;gap:9px;align-items:flex-start;
+    border:1px solid var(--brass-dim);background:var(--brass-wash);
+    border-radius:5px;padding:9px 10px;margin-top:11px;
+    font-size:12px;line-height:1.5;color:var(--mute);
+  }
+  .note b{color:var(--text);font-weight:600;}
+  .note .tag{
+    font-family:"IBM Plex Mono",monospace;font-size:8.5px;font-weight:600;
+    letter-spacing:.1em;text-transform:uppercase;color:var(--brass-hi);
+    flex:none;padding-top:2px;
+  }
+  .note.soft{border-color:var(--line);background:var(--panel-2);}
+  .note.soft .tag{color:var(--dim);}
+
+  /* Open Hand picker */
+  .oh{margin-top:11px;border:1px solid var(--brass-dim);border-radius:5px;overflow:hidden;}
+  .oh-h{
+    font-family:"IBM Plex Mono",monospace;font-size:8.5px;font-weight:600;
+    letter-spacing:.12em;text-transform:uppercase;color:var(--brass-hi);
+    padding:7px 10px;background:var(--brass-wash);
+  }
+  .oh-b{display:flex;}
+  .oh-b button{
+    appearance:none;flex:1;border:0;border-left:1px solid var(--line);background:var(--ink);
+    color:var(--dim);font-family:"IBM Plex Mono",monospace;font-size:9px;font-weight:600;
+    letter-spacing:.08em;text-transform:uppercase;padding:9px 3px;cursor:pointer;line-height:1.4;
+  }
+  .oh-b button:first-child{border-left:0;}
+  .oh-b button small{display:block;font-size:8px;letter-spacing:.04em;color:var(--dim);margin-top:2px;}
+  .oh-b button.on{background:var(--brass-wash);color:var(--brass-hi);}
+  .oh-b button.on small{color:var(--brass);}
+
+  .dmg-bar{
+    display:flex;align-items:center;justify-content:space-between;gap:10px;
+    margin:14px -12px -12px;padding:12px;border-top:1px solid var(--line);
+    background:var(--panel-2);
+  }
+  .dmg-bar .lab{
+    font-family:"IBM Plex Mono",monospace;font-size:9px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--dim);line-height:1.6;
+  }
+  .dmg-bar .n{font-weight:800;font-size:32px;letter-spacing:-.02em;line-height:1;}
+  .dmg-bar .n.empty{color:var(--line);}
+
+  #addAttack{
+    appearance:none;width:100%;background:var(--panel);border:1px solid var(--line);
+    border-radius:6px;color:var(--text);font-family:"IBM Plex Mono",monospace;
+    font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+    padding:14px;cursor:pointer;margin-bottom:14px;
+  }
+  #addAttack:active{border-color:var(--brass);color:var(--brass-hi);}
+
+  .bar{
+    position:fixed;left:0;right:0;bottom:0;z-index:20;
+    background:rgba(11,12,13,.96);backdrop-filter:blur(10px);
+    border-top:1px solid var(--line);
+    padding:11px 12px calc(11px + env(safe-area-inset-bottom));
+    display:flex;align-items:center;gap:11px;
+  }
+  .bar .lab{
+    font-family:"IBM Plex Mono",monospace;font-size:9px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--dim);flex:1;line-height:1.5;
+  }
+  .bar .lab small{display:block;color:var(--mute);letter-spacing:.03em;font-size:10px;margin-top:2px;}
+  .bar .n{font-weight:800;font-size:38px;letter-spacing:-.03em;line-height:1;color:var(--brass-hi);}
+  .bar button{
+    appearance:none;background:transparent;border:1px solid var(--line);border-radius:5px;
+    color:var(--mute);font-family:"IBM Plex Mono",monospace;font-size:9px;
+    letter-spacing:.1em;text-transform:uppercase;padding:9px 11px;cursor:pointer;flex:none;
+  }
+  .bar button:active{border-color:var(--brass);color:var(--brass-hi);}
+
+  @media (prefers-reduced-motion:reduce){
+    *{transition:none !important;scroll-behavior:auto !important;}
+  }
+  :focus-visible{outline:2px solid var(--brass-hi);outline-offset:2px;}
+
+  @media (min-width:560px){
+    body{padding-left:20px;padding-right:20px;}
+    h1{font-size:24px;}
+    .readout .n{font-size:74px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1>Main <span>Event</span></h1>
+    <div class="who">CM Monk<br><span id="whoLvl">Monk 2 · Open Hand</span></div>
+  </header>
+
+  <!-- ============ ACTION ECONOMY ============ -->
+  <div class="block">
+    <h2>
+      <span>Action economy</span>
+      <span class="lvl" id="lvl">
+        <button type="button" data-l="2">Lv 2</button>
+        <button type="button" data-l="3" class="on">Lv 3</button>
+      </span>
+    </h2>
+    <div class="econ" id="econ">
+      <div class="slot" data-k="action"><span class="box">&#10003;</span><span class="nm">Action</span></div>
+      <div class="slot" data-k="bonus"><span class="box">&#10003;</span><span class="nm">Bonus</span></div>
+      <div class="slot tap" data-k="reaction" role="button" tabindex="0"><span class="box">&#10003;</span><span class="nm">Reaction</span></div>
+    </div>
+    <div class="econ-note" id="econNote"></div>
+    <div class="focus" id="focusRow">
+      <span class="nm">Focus points<b id="focusCount">3 of 3 left</b></span>
+      <span class="pips" id="pips"></span>
+    </div>
+    <div class="rests">
+      <div class="rest">
+        <span class="rn">Cloud's Jaunt</span>
+        <span class="rs">Bonus action &middot; teleport 30 ft</span>
+        <span class="charges" id="jauntCharges"></span>
+      </div>
+      <div class="rest">
+        <span class="rn">Uncanny Metabolism</span>
+        <span class="rs">On initiative &middot; refill focus, heal</span>
+        <span class="charges" id="metaCharges"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ LOADOUT ============ -->
+  <div class="block">
+    <h2>Hands</h2>
+
+    <div class="eff" id="effClub" style="border-top:0;">
+      <div class="eff-top">
+        <span class="eff-name">
+          <b>+1 Club drawn</b>
+          <small>uncommon &middot; simple melee, so it counts as a monk weapon</small>
+        </span>
+        <button class="sw" type="button" id="swClub" aria-pressed="true" aria-label="Toggle the +1 Club"></button>
+      </div>
+      <ul class="eff-list">
+        <li>Club strikes get <b>+1 to hit and +1 damage</b></li>
+        <li>Martial Arts <b>d6 replaces the club's d4</b></li>
+        <li>Flurry and the free bonus strike are <em>Unarmed Strikes</em> &mdash; the club does nothing for them</li>
+        <li>Club in hand means <b>the horn is not</b>. Encouraging Song needs a swap.</li>
+      </ul>
+    </div>
+
+    <div class="now">
+      <div><span class="k">Club strike</span><span class="v" id="nowClub">+6 &middot; 1d6+4</span></div>
+      <div><span class="k">Unarmed strike</span><span class="v" id="nowFist">+5 &middot; 1d6+3</span></div>
+    </div>
+  </div>
+
+  <div id="attacks"></div>
+  <button id="addAttack" type="button">+ Add attack roll</button>
+</div>
+
+<div class="bar">
+  <div class="lab">Turn damage<small id="runs">nothing yet</small></div>
+  <button type="button" id="reset">New turn</button>
+  <span class="n" id="turnTotal">0</span>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var $ = function(id){ return document.getElementById(id); };
+
+  /* =============== character constants =============== */
+  var DEX = 3, PROF = 2, CLUB = 1;
+  var SAVE_DC = 8 + DEX + PROF;           // 13
+
+  var UNSET = "";
+  var T_CLUB   = "Action \u2014 +1 Club";
+  var T_FIST   = "Action \u2014 Unarmed Strike";
+  var T_BONUS  = "Bonus Action \u2014 Unarmed Strike";
+  var T_FLURRY = "Flurry of Blows";
+
+  var STRIKE_TYPES = [
+    [UNSET, "Choose strike type\u2026"],
+    [T_CLUB,   "Action \u2014 +1 Club"],
+    [T_FIST,   "Action \u2014 Unarmed Strike"],
+    [T_BONUS,  "Bonus Action \u2014 Unarmed Strike"],
+    [T_FLURRY, "Flurry of Blows \u2014 1 focus, two strikes"]
+  ];
+
+  var OH = [
+    ["addle","Addle","no opp. attacks"],
+    ["push","Push","STR save \u00b7 15 ft"],
+    ["topple","Topple","DEX save \u00b7 prone"]
+  ];
+
+  var G = { level:3, club:true, reaction:false, jaunt:[false,false], meta:[false] };
+  var host = $("attacks");
+  var cards = [];
+
+  function el(tag, cls, html){
+    var n = document.createElement(tag);
+    if(cls) n.className = cls;
+    if(html !== undefined) n.innerHTML = html;
+    return n;
+  }
+  function focusMax(){ return G.level >= 3 ? 3 : 2; }
+
+  /* =============== level switch =============== */
+  Array.prototype.forEach.call($("lvl").children, function(b){
+    b.addEventListener("click", function(){
+      G.level = parseInt(b.dataset.l, 10);
+      Array.prototype.forEach.call($("lvl").children, function(x){
+        x.className = (parseInt(x.dataset.l,10) === G.level) ? "on" : "";
+      });
+      buildPips();
+      refreshAll();
+    });
+  });
+
+  function buildPips(){
+    var box = $("pips");
+    box.innerHTML = "";
+    for(var i = 0; i < focusMax(); i++){
+      box.appendChild(el("span","pip"));
+    }
+  }
+
+  /* =============== charge trackers =============== */
+  function buildCharges(id, key, n){
+    var box = $(id);
+    box.innerHTML = "";
+    for(var i = 0; i < n; i++){
+      (function(idx){
+        var b = el("button","charge");
+        b.type = "button";
+        b.setAttribute("aria-label","Use " + (key === "jaunt" ? "Cloud's Jaunt" : "Uncanny Metabolism"));
+        b.addEventListener("click", function(){
+          G[key][idx] = !G[key][idx];
+          b.className = "charge" + (G[key][idx] ? " spent" : "");
+          b.setAttribute("aria-pressed", G[key][idx] ? "true" : "false");
+        });
+        box.appendChild(b);
+      })(i);
+    }
+  }
+  buildCharges("jauntCharges","jaunt",2);
+  buildCharges("metaCharges","meta",1);
+
+  /* =============== club switch =============== */
+  $("swClub").addEventListener("click", function(){
+    G.club = !G.club;
+    this.setAttribute("aria-pressed", G.club ? "true" : "false");
+    $("effClub").className = "eff" + (G.club ? "" : " off");
+    refreshAll();
+  });
+
+  /* =============== action economy =============== */
+  var reactionSlot = document.querySelector('.slot[data-k="reaction"]');
+  function toggleReaction(){ G.reaction = !G.reaction; refreshAll(); }
+  reactionSlot.addEventListener("click", toggleReaction);
+  reactionSlot.addEventListener("keydown", function(e){
+    if(e.key === "Enter" || e.key === " "){ e.preventDefault(); toggleReaction(); }
+  });
+
+  function paintEconomy(){
+    var action = 0, bonusSingles = 0, groups = [], unset = 0;
+    cards.forEach(function(c){
+      var t = c.getType();
+      if(!t){ unset++; return; }
+      if(t === T_CLUB || t === T_FIST) action++;
+      else if(t === T_FLURRY){
+        if(groups.indexOf(c.groupId) === -1) groups.push(c.groupId);
+      } else bonusSingles++;
+    });
+    var bonus = bonusSingles + groups.length;
+
+    var counts = { action:action, bonus:bonus, reaction:G.reaction ? 1 : 0 };
+    document.querySelectorAll(".slot").forEach(function(s){
+      var n = counts[s.dataset.k];
+      s.className = "slot" + (s.dataset.k === "reaction" ? " tap" : "") +
+        (n > 1 ? " used over" : n === 1 ? " used" : "");
+      s.querySelector(".box").textContent = n > 1 ? n : "\u2713";
+    });
+
+    var lines = [];
+    if(action > 1) lines.push('<span class="warn"><b>' + action + " actions</b> \u2014 you only get one</span>");
+    if(bonus > 1) lines.push('<span class="warn"><b>' + bonus + " bonus actions</b> \u2014 you only get one</span>");
+    if(bonusSingles && groups.length)
+      lines.push("The free Martial Arts strike and Flurry are <b>the same bonus action</b>. Flurry replaces it, it doesn't stack.");
+    if(groups.length)
+      lines.push("Flurry of Blows: <b>two strikes</b>, one bonus action, one focus point.");
+    if(!lines.length){
+      lines.push(unset
+        ? "Pick a strike type on each card and these tick themselves."
+        : G.level >= 3
+          ? "Tap Reaction when you spend it on Deflect Attacks (1d10+6)."
+          : "Tap Reaction when you spend it on an opportunity attack.");
+    }
+    if(action === 1 && !bonus && !unset)
+      lines.push("Bonus action still open \u2014 Flurry, Patient Defense, Step of the Wind, or Cloud's Jaunt.");
+    $("econNote").innerHTML = lines.join("<br>");
+
+    var MAX = focusMax();
+    var left = MAX - groups.length;
+    document.querySelectorAll(".pip").forEach(function(p, i){
+      p.className = "pip" + (i < Math.max(0, left) ? "" : " out");
+    });
+    var row = $("focusRow");
+    row.className = "focus" + (left < 0 ? " over" : left === 0 ? " drained" : "");
+    $("focusCount").textContent = left < 0
+      ? Math.abs(left) + " over \u2014 you don't have it"
+      : left + " of " + MAX + " left";
+  }
+
+  function paintNow(){
+    $("whoLvl").textContent = "Monk " + G.level + (G.level >= 3 ? " \u00b7 Open Hand" : " \u00b7 pre-subclass");
+    $("nowClub").innerHTML = G.club
+      ? "<em>+" + (DEX + PROF + CLUB) + "</em> \u00b7 1d6+" + (DEX + CLUB)
+      : "sheathed";
+    $("nowFist").innerHTML = "+" + (DEX + PROF) + " \u00b7 1d6+" + DEX;
+  }
+
+  /* =============== modifier rows =============== */
+  function modRow(name, value, on, editable, onChange){
+    var row = el("label","row");
+    var cb = el("input"); cb.type = "checkbox"; cb.checked = on;
+    var nm = el("span","name");
+    if(editable){ nm.contentEditable = "true"; nm.spellcheck = false; }
+    nm.textContent = name;
+    var val = el("input"); val.type = "number"; val.value = value; val.inputMode = "numeric";
+    row.appendChild(cb); row.appendChild(nm); row.appendChild(val);
+    cb.addEventListener("change", onChange);
+    val.addEventListener("input", onChange);
+    val.addEventListener("click", function(e){ e.preventDefault(); e.stopPropagation(); });
+    if(editable) nm.addEventListener("click", function(e){ e.preventDefault(); });
+    row.setChecked = function(v){ cb.checked = v; };
+    row.setDisabled = function(v){
+      cb.disabled = v; val.disabled = v;
+      row.className = "row" + (v ? " muted" : "");
+    };
+    return row;
+  }
+  function sumMods(box){
+    var total = 0, parts = [];
+    Array.prototype.forEach.call(box.children, function(row){
+      var cb = row.querySelector("input[type=checkbox]");
+      if(!cb || cb.disabled) return;
+      var v = parseInt(row.querySelector("input[type=number]").value, 10);
+      if(cb.checked && !isNaN(v) && v !== 0){
+        total += v;
+        parts.push(row.querySelector(".name").textContent.trim() +
+                   (v > 0 ? " +" : " \u2212") + Math.abs(v));
+      }
+    });
+    return { total: total, parts: parts };
+  }
+
+  /* =============== attack card =============== */
+  function makeCard(after){
+    var state = { face:null, mode:"damage", oh:null };
+
+    var card = el("div","block");
+
+    var top = el("div","card-top");
+    var line = el("div","line");
+    var idx = el("span","idx","Strike");
+    var kill = el("button","kill","\u00d7");
+    kill.type = "button"; kill.setAttribute("aria-label","Remove this attack roll");
+    line.appendChild(idx); line.appendChild(kill);
+    top.appendChild(line);
+
+    var sel = el("select");
+    STRIKE_TYPES.forEach(function(t){
+      var o = el("option"); o.value = t[0]; o.textContent = t[1]; sel.appendChild(o);
+    });
+    sel.value = UNSET;
+    sel.setAttribute("aria-label","Strike type");
+    sel.className = "unset";
+    sel.addEventListener("change", function(){
+      sel.className = sel.value ? "" : "unset";
+      onTypeChange(card);
+    });
+    top.appendChild(sel);
+
+    /* what this strike does */
+    var seg = el("div","seg");
+    [["damage","Damage"],["grapple","Grapple"],["shove","Shove"]].forEach(function(m){
+      var b = el("button", m[0] === "damage" ? "on" : "", m[1]);
+      b.type = "button"; b.dataset.m = m[0];
+      b.addEventListener("click", function(){
+        if(seg.classList.contains("locked")) return;
+        state.mode = m[0];
+        Array.prototype.forEach.call(seg.children, function(x){
+          x.className = x.dataset.m === state.mode ? "on" : "";
+        });
+        refreshAll();
+      });
+      seg.appendChild(b);
+    });
+    top.appendChild(seg);
+
+    var pairNote = el("div");
+    pairNote.style.cssText = "font-family:'IBM Plex Mono',monospace;font-size:9.5px;" +
+      "letter-spacing:.06em;color:var(--dim);margin-top:6px;line-height:1.5;";
+    top.appendChild(pairNote);
+    card.appendChild(top);
+
+    var pad = el("div","pad");
+    card.appendChild(pad);
+
+    var readout = el("div","readout");
+    var bigN = el("span","n empty","\u2013");
+    readout.appendChild(bigN);
+    readout.appendChild(el("div","lab","Total to hit"));
+    var math = el("div","math","Pick the d20 face you rolled");
+    readout.appendChild(math);
+    pad.appendChild(readout);
+
+    var ww = el("div","wheel-wrap");
+    var wheel = el("div","wheel");
+    wheel.setAttribute("role","listbox");
+    wheel.setAttribute("aria-label","d20 face");
+    for(var i = 1; i <= 20; i++){
+      var t = el("button","tick", String(i));
+      t.type = "button"; t.dataset.v = i; t.setAttribute("role","option");
+      wheel.appendChild(t);
+    }
+    ww.appendChild(wheel);
+    var frame = el("div","wheel-frame");
+    ww.appendChild(frame);
+    ww.appendChild(el("div","fade l"));
+    ww.appendChild(el("div","fade r"));
+    pad.appendChild(ww);
+    pad.appendChild(el("div","wheel-cap","swipe to the number you rolled"));
+
+    var attackNote = el("div");
+    pad.appendChild(attackNote);
+
+    /* Open Hand picker */
+    var ohWrap = el("div","oh");
+    ohWrap.hidden = true;
+    ohWrap.appendChild(el("div","oh-h","Open Hand Technique \u2014 on this hit"));
+    var ohB = el("div","oh-b");
+    OH.forEach(function(o){
+      var b = el("button","", o[1] + "<small>" + o[2] + "</small>");
+      b.type = "button"; b.dataset.o = o[0];
+      b.addEventListener("click", function(){
+        state.oh = (state.oh === o[0]) ? null : o[0];
+        Array.prototype.forEach.call(ohB.children, function(x){
+          x.className = x.dataset.o === state.oh ? "on" : "";
+        });
+        refreshAll();
+      });
+      ohB.appendChild(b);
+    });
+    ohWrap.appendChild(ohB);
+    pad.appendChild(ohWrap);
+    var ohNote = el("div");
+    pad.appendChild(ohNote);
+
+    var atkSect = el("div","sect","Attack modifiers");
+    pad.appendChild(atkSect);
+    var atkBox = el("div");
+    var rDex  = modRow("Dexterity", DEX, true, false, refreshAll);
+    var rProf = modRow("Proficiency", PROF, true, false, refreshAll);
+    var rClubA= modRow("+1 Club", CLUB, true, false, refreshAll);
+    atkBox.appendChild(rDex); atkBox.appendChild(rProf); atkBox.appendChild(rClubA);
+    pad.appendChild(atkBox);
+    var addAtkMod = el("button","add","+ add modifier");
+    addAtkMod.type = "button";
+    addAtkMod.addEventListener("click", function(){
+      var r = modRow("Situational",0,true,true,refreshAll);
+      atkBox.appendChild(r); r.querySelector(".name").focus(); refreshAll();
+    });
+    pad.appendChild(addAtkMod);
+
+    var diceSect = el("div","sect","Damage dice<span class=\"x2\"> \u00b7 rolled twice</span>");
+    pad.appendChild(diceSect);
+    var diceBox = el("div");
+    pad.appendChild(diceBox);
+
+    var dieRows = [];
+    function dieRow(label, sub, removable){
+      var row = el("div","row");
+      var nm = el("span","name","<b>" + label + "</b>" + (sub ? "<small>" + sub + "</small>" : ""));
+      var pair = el("span","pair");
+
+      var inp = el("input"); inp.type = "number"; inp.min = "1";
+      inp.className = "die"; inp.placeholder = "\u2013"; inp.inputMode = "numeric";
+      inp.setAttribute("aria-label", label);
+      inp.addEventListener("input", refreshAll);
+
+      var plus = el("span","x","+");
+      var crit = el("input"); crit.type = "number"; crit.min = "1";
+      crit.className = "die crit"; crit.placeholder = "crit"; crit.inputMode = "numeric";
+      crit.setAttribute("aria-label", label + " \u2014 critical die");
+      crit.addEventListener("input", refreshAll);
+
+      pair.appendChild(inp); pair.appendChild(plus); pair.appendChild(crit);
+      row.appendChild(nm); row.appendChild(pair);
+
+      var entry = { row:row, main:inp, crit:crit };
+      dieRows.push(entry);
+
+      if(removable){
+        var x = el("button","drop","\u00d7"); x.type = "button";
+        x.setAttribute("aria-label","Remove this damage roll");
+        x.addEventListener("click", function(){
+          dieRows = dieRows.filter(function(e){ return e !== entry; });
+          row.remove(); refreshAll();
+        });
+        row.appendChild(x);
+      }
+      return row;
+    }
+    diceBox.appendChild(dieRow("Martial Arts die","d6 \u00b7 replaces the club's d4", false));
+
+    var addDie = el("button","add","+ Add another roll");
+    addDie.type = "button";
+    addDie.addEventListener("click", function(){
+      diceBox.appendChild(dieRow("Extra die","", true)); refreshAll();
+    });
+    pad.appendChild(addDie);
+
+    var dmgSect = el("div","sect","Damage modifiers");
+    pad.appendChild(dmgSect);
+    var dmgBox = el("div");
+    var rDexD  = modRow("Dexterity", DEX, true, false, refreshAll);
+    var rClubD = modRow("+1 Club", CLUB, true, false, refreshAll);
+    dmgBox.appendChild(rDexD); dmgBox.appendChild(rClubD);
+    pad.appendChild(dmgBox);
+    var addDmgMod = el("button","add","+ add modifier");
+    addDmgMod.type = "button";
+    addDmgMod.addEventListener("click", function(){
+      var r = modRow("Situational",0,true,true,refreshAll);
+      dmgBox.appendChild(r); r.querySelector(".name").focus(); refreshAll();
+    });
+    pad.appendChild(addDmgMod);
+
+    var dmgBar = el("div","dmg-bar");
+    var dmgLab = el("span","lab","Damage");
+    var dmgN = el("span","n empty","\u2013");
+    dmgBar.appendChild(dmgLab); dmgBar.appendChild(dmgN);
+    pad.appendChild(dmgBar);
+
+    /* ---- carousel ---- */
+    var lockScroll = false, scrollTimer;
+    function padWheel(){
+      var w = wheel.clientWidth;
+      if(!w) return;
+      var side = Math.max(0, (w - 52) / 2);
+      wheel.style.paddingLeft = side + "px";
+      wheel.style.paddingRight = side + "px";
+      centerOn(state.face || 10, "auto");
+    }
+    function centerOn(v, behavior){
+      var t = wheel.querySelector('.tick[data-v="' + v + '"]');
+      if(!t) return;
+      lockScroll = true;
+      var left = t.offsetLeft - wheel.clientWidth / 2 + 26;
+      if(wheel.scrollTo) wheel.scrollTo({ left:left, behavior:behavior || "smooth" });
+      else wheel.scrollLeft = left;
+      setTimeout(function(){ lockScroll = false; }, 260);
+    }
+    function nearestTick(){
+      var mid = wheel.scrollLeft + wheel.clientWidth / 2, best = null, bd = Infinity;
+      Array.prototype.forEach.call(wheel.children, function(t){
+        var dd = Math.abs(t.offsetLeft + 26 - mid);
+        if(dd < bd){ bd = dd; best = t; }
+      });
+      return best;
+    }
+    function paintTicks(){
+      var s = state.face;
+      Array.prototype.forEach.call(wheel.children, function(t){
+        var v = parseInt(t.dataset.v, 10);
+        t.className = "tick" +
+          (v === s ? " sel" + ((v === 1 || v === 20) ? " hot" : "") : "") +
+          (s && Math.abs(v - s) === 1 ? " near" : "");
+        t.setAttribute("aria-selected", v === s ? "true" : "false");
+      });
+      frame.className = "wheel-frame" + (s ? " live" : "");
+    }
+    wheel.addEventListener("scroll", function(){
+      if(lockScroll) return;
+      clearTimeout(scrollTimer);
+      scrollTimer = setTimeout(function(){
+        var t = nearestTick();
+        if(!t) return;
+        var v = parseInt(t.dataset.v, 10);
+        if(v !== state.face){ state.face = v; paintTicks(); refreshAll(); }
+      }, 90);
+    }, { passive:true });
+    wheel.addEventListener("click", function(e){
+      var t = e.target.closest(".tick");
+      if(!t) return;
+      state.face = parseInt(t.dataset.v, 10);
+      centerOn(state.face); paintTicks(); refreshAll();
+    });
+
+    /* ---- per-card recalc ---- */
+    card.recalc = function(){
+      var f = state.face;
+      var isCrit = (f === 20);
+      var type = sel.value;
+      var isClubStrike = (type === T_CLUB);
+      var isFlurry = (type === T_FLURRY);
+      var clubLive = isClubStrike && G.club;
+
+      card.classList.toggle("is-crit", isCrit);
+
+      /* the club bonus only exists on a club strike */
+      [rClubA, rClubD].forEach(function(r){
+        if(r._live !== clubLive){ r._live = clubLive; r.setChecked(clubLive); }
+        r.setDisabled(!clubLive);
+      });
+
+      /* club is a weapon attack: no grapple or shove off it */
+      var noGrab = isClubStrike;
+      seg.className = "seg" + (noGrab ? " locked" : "");
+      if(noGrab && state.mode !== "damage"){
+        state.mode = "damage";
+        Array.prototype.forEach.call(seg.children, function(x){
+          x.className = x.dataset.m === "damage" ? "on" : "";
+        });
+      }
+      var grabbing = (state.mode !== "damage");
+
+      /* Open Hand only rides Flurry hits, and only from level 3 */
+      var ohLive = isFlurry && G.level >= 3 && !grabbing;
+      ohWrap.hidden = !ohLive;
+      if(!ohLive && state.oh){
+        state.oh = null;
+        Array.prototype.forEach.call(ohB.children, function(x){ x.className = ""; });
+      }
+      ohNote.innerHTML = (state.oh === "push" || state.oh === "topple")
+        ? '<div class="note"><span class="tag">Save</span><span>' +
+          (state.oh === "push" ? "Strength" : "Dexterity") +
+          ' save against <b>DC ' + SAVE_DC + '</b>. On a failure: ' +
+          (state.oh === "push" ? "pushed up to <b>15 ft</b> away." : "knocked <b>Prone</b>.") +
+          (state.oh === "topple"
+            ? " Prone gives you advantage in melee but <b>disadvantage to every ally shooting at it</b>."
+            : "") +
+          '</span></div>'
+        : state.oh === "addle"
+        ? '<div class="note"><span class="tag">Addle</span><span>No save. It can\u2019t make ' +
+          '<b>opportunity attacks</b> until the start of its next turn. Free exit for anyone it\u2019s on.</span></div>'
+        : "";
+
+      /* grapple and shove replace damage entirely */
+      diceSect.hidden = grabbing; diceBox.hidden = grabbing; addDie.hidden = grabbing;
+      dmgSect.hidden = grabbing; dmgBox.hidden = grabbing; addDmgMod.hidden = grabbing;
+      dmgBar.hidden = grabbing;
+
+      dieRows.forEach(function(e){
+        e.crit.disabled = !isCrit;
+        if(!isCrit && e.crit.value !== "") e.crit.value = "";
+      });
+
+      var am = sumMods(atkBox);
+      if(f === null){
+        bigN.textContent = "\u2013"; bigN.className = "n empty";
+        math.innerHTML = am.parts.length ? "ready: " + am.parts.join(" \u00b7 ")
+                                         : "Pick the d20 face you rolled";
+        readout.className = "readout";
+        attackNote.innerHTML = "";
+      } else {
+        bigN.textContent = f + am.total; bigN.className = "n";
+        math.innerHTML = "<b>" + f + "</b> rolled" +
+          (am.parts.length ? " \u00b7 " + am.parts.join(" \u00b7 ") : "");
+        readout.className = "readout" + (f === 20 ? " crit" : f === 1 ? " fumble" : "");
+        attackNote.innerHTML =
+          f === 1 ? '<div class="note soft"><span class="tag">Miss</span><span>Natural 1 always ' +
+                    'misses. No reroll \u2014 you have <b>no Luck and no Tavern Brawler</b>.</span></div>'
+        : f === 20 ? '<div class="note"><span class="tag">Crit</span><span>Natural 20. ' +
+                    '<b>Crit boxes are open below</b> \u2014 roll every damage die a second ' +
+                    'time and enter it. Flat modifiers are not doubled.</span></div>'
+        : "";
+      }
+
+      if(grabbing){
+        dmgLab.innerHTML = "";
+        return;
+      }
+
+      var dm = sumMods(dmgBox), sum = 0, any = false;
+      var faces = [], critFaces = [];
+      dieRows.forEach(function(e){
+        [[e.main,false],[e.crit,true]].forEach(function(pv){
+          var inp = pv[0], isC = pv[1];
+          if(inp.disabled) return;
+          var v = parseInt(inp.value, 10);
+          if(isNaN(v)) return;
+          any = true; sum += v;
+          if(isC) critFaces.push(String(v)); else faces.push(String(v));
+        });
+      });
+
+      if(!any){
+        dmgN.textContent = "\u2013"; dmgN.className = "n empty";
+        dmgLab.textContent = "Damage";
+      } else {
+        var d = Math.max(0, sum + dm.total);
+        dmgN.textContent = d; dmgN.className = "n";
+        dmgLab.innerHTML = "Damage" + (isCrit ? " <span style='color:var(--brass-hi)'>crit</span>" : "") +
+          "<br><span style='color:var(--dim);letter-spacing:.06em;'>" +
+          faces.join(" + ") +
+          (critFaces.length
+            ? " <span style='color:var(--brass-hi)'>+ " + critFaces.join(" + ") + "</span>"
+            : "") +
+          (dm.total ? (dm.total > 0 ? " +" : " \u2212") + Math.abs(dm.total) : "") +
+          " \u00b7 bludgeoning</span>";
+      }
+    };
+
+    card.getDamage = function(){
+      if(state.mode !== "damage") return null;
+      var v = parseInt(dmgN.textContent, 10);
+      return isNaN(v) ? null : v;
+    };
+    card.getType = function(){ return sel.value; };
+    card.setType = function(v){ sel.value = v; sel.className = v ? "" : "unset"; };
+    card.lockType = function(on){
+      sel.disabled = on;
+      pairNote.innerHTML = on
+        ? "second strike of the Flurry \u2014 set on the first card"
+        : "";
+    };
+    card.setNote = function(html){ if(!sel.disabled) pairNote.innerHTML = html; };
+    card.groupId = null;
+    card.part = null;
+    card.setIndex = function(n){
+      idx.textContent = "Strike " + n +
+        (card.groupId ? " \u00b7 Flurry " + card.part + " of 2" : "");
+    };
+    card.setRemovable = function(on){ kill.className = "kill" + (on ? "" : " hidden"); };
+
+    kill.addEventListener("click", function(){
+      var doomed = card.groupId
+        ? cards.filter(function(c){ return c.groupId === card.groupId; })
+        : [card];
+      if(doomed.length >= cards.length) return;
+      cards = cards.filter(function(c){ return doomed.indexOf(c) === -1; });
+      doomed.forEach(function(c){ c.remove(); });
+      renumber(); refreshAll();
+    });
+
+    if(after && after.parentNode === host){
+      host.insertBefore(card, after.nextSibling);
+      cards.splice(cards.indexOf(after) + 1, 0, card);
+    } else {
+      host.appendChild(card);
+      cards.push(card);
+    }
+    padWheel();
+    window.addEventListener("resize", padWheel);
+    paintTicks();
+    return card;
+  }
+
+  var groupSeq = 0;
+
+  function partnerOf(card){
+    for(var i = 0; i < cards.length; i++){
+      if(cards[i] !== card && cards[i].groupId && cards[i].groupId === card.groupId) return cards[i];
+    }
+    return null;
+  }
+
+  function onTypeChange(card){
+    var t = card.getType();
+    if(t === T_FLURRY){
+      if(!card.groupId){
+        card.groupId = ++groupSeq;
+        card.part = 1;
+        var partner = makeCard(card);
+        partner.groupId = card.groupId;
+        partner.part = 2;
+        partner.setType(T_FLURRY);
+        partner.lockType(true);
+      }
+    } else if(card.groupId){
+      var p = partnerOf(card);
+      if(p){
+        cards = cards.filter(function(c){ return c !== p; });
+        p.remove();
+      }
+      card.groupId = null;
+      card.part = null;
+      card.lockType(false);
+    }
+    renumber();
+    refreshAll();
+  }
+
+  function renumber(){
+    cards.forEach(function(c,i){
+      c.setIndex(i+1);
+      var pairLocked = c.groupId && cards.filter(function(x){
+        return x.groupId === c.groupId;
+      }).length;
+      c.setRemovable(cards.length > (pairLocked || 1));
+      var t = c.getType();
+      if(t === T_CLUB && !G.club) c.setNote("Club is sheathed \u2014 flip it on above, or this is a bare fist.");
+      else if(t === T_BONUS) c.setNote("Free every turn after you Attack. No focus point.");
+      else if(t === T_FIST) c.setNote("The club is the better action strike while it\u2019s in hand.");
+      else if(t === T_FLURRY && G.level < 3) c.setNote("No Open Hand yet \u2014 that arrives at level 3.");
+      else c.setNote("");
+    });
+  }
+
+  function refreshAll(){
+    cards.forEach(function(c){ c.recalc(); });
+    renumber();
+    paintEconomy();
+    paintNow();
+    var vals = cards.map(function(c){ return c.getDamage(); })
+                    .filter(function(v){ return v !== null; });
+    $("turnTotal").textContent = vals.reduce(function(a,b){ return a+b; }, 0);
+    $("runs").textContent = vals.length ? vals.join(" + ") : "nothing yet";
+  }
+
+  $("addAttack").addEventListener("click", function(){
+    var c = makeCard(); renumber(); refreshAll();
+    if(c.scrollIntoView) c.scrollIntoView({ behavior:"smooth", block:"start" });
+  });
+
+  $("reset").addEventListener("click", function(){
+    cards.slice().forEach(function(c){ c.remove(); });
+    cards = [];
+    G.reaction = false;
+    makeCard(); renumber(); refreshAll();
+    if(window.scrollTo) try{ window.scrollTo({ top:0, behavior:"smooth" }); }catch(e){}
+  });
+
+  buildPips();
+  makeCard();
+  renumber();
+  refreshAll();
+})();
+</script>
+</body>
+</html>
