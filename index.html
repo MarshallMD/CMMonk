@@ -3,88 +3,123 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#0B0C0D">
+<meta name="theme-color" content="#0D0318">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Main Event">
-<title>Main Event</title>
+<meta name="apple-mobile-web-app-title" content="Monkin' Time">
+<title>It's Monkin' Time</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;800&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;800;900&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --ink:#0B0C0D; --panel:#15171A; --panel-2:#1D2024;
-    --line:#2A2E33; --line-soft:#212429;
-    --text:#E9E7E3; --mute:#969B9F; --dim:#666C71;
-    --brass:#C8952E; --brass-hi:#EFBB4E; --brass-dim:#6B5019;
-    --brass-wash:rgba(200,149,46,.13);
-    --steel:#5C7A8C; --steel-hi:#7FA5BB;
+    --void:#0D0318; --deep:#17052A; --panel:#1E0836; --panel-2:#2A0C4A;
+    --line:#3D1266; --line-soft:#2C0B4E;
+    --text:#F4ECFF; --mute:#BCA4DC; --dim:#8A6FB2; --dimmer:#614A86;
+    --pink:#FF2D95; --pink-hi:#FF7BC0; --pink-dim:#7A1247;
+    --yellow:#FFE500; --yellow-hi:#FFF46B; --yellow-dim:#6B6000;
+    --cyan:#00E5FF; --cyan-hi:#7CF1FF; --cyan-dim:#046B78;
+    --pink-wash:rgba(255,45,149,.14);
+    --cyan-wash:rgba(0,229,255,.12);
+    --yellow-wash:rgba(255,229,0,.13);
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
   html,body{margin:0;padding:0;}
   body{
-    background:var(--ink);color:var(--text);
+    background:var(--void);
+    background-image:
+      radial-gradient(120% 60% at 50% 0%, rgba(255,45,149,.16) 0%, transparent 62%),
+      radial-gradient(90% 45% at 12% 100%, rgba(0,229,255,.10) 0%, transparent 60%);
+    background-attachment:fixed;
+    color:var(--text);
     font-family:"Archivo",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
     font-size:15px;line-height:1.4;
-    padding:calc(14px + env(safe-area-inset-top)) 12px calc(96px + env(safe-area-inset-bottom));
+    padding:calc(14px + env(safe-area-inset-top)) 12px calc(150px + env(safe-area-inset-bottom));
     -webkit-text-size-adjust:100%;
   }
-  .wrap{max-width:520px;margin:0 auto;}
+  .wrap{max-width:540px;margin:0 auto;}
+
+  /* ---------- gate ---------- */
+  .gate{
+    position:fixed;inset:0;z-index:60;background:var(--void);
+    background-image:radial-gradient(120% 70% at 50% 15%, rgba(255,45,149,.22) 0%, transparent 65%);
+    display:flex;align-items:center;justify-content:center;
+    padding:calc(24px + env(safe-area-inset-top)) 22px calc(24px + env(safe-area-inset-bottom));
+  }
+  .gate[hidden]{display:none;}
+  .gate-in{max-width:340px;width:100%;text-align:center;}
+  .gate-line{
+    font-family:"IBM Plex Mono",monospace;font-size:11px;line-height:1.7;
+    color:var(--mute);margin:14px 0 22px;letter-spacing:.03em;
+  }
+  .gate-go,.gate-alt{
+    appearance:none;display:block;width:100%;border-radius:7px;cursor:pointer;
+    font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;padding:15px;border:1px solid var(--pink);
+  }
+  .gate-go{background:var(--pink);color:#1A0010;font-weight:600;border:0;}
+  .gate-alt{background:transparent;color:var(--mute);border-color:var(--line);margin-top:9px;}
 
   header{
     display:flex;align-items:center;justify-content:space-between;gap:10px;
     padding-bottom:11px;margin-bottom:14px;border-bottom:1px solid var(--line);
   }
-  h1{font-weight:800;font-size:20px;letter-spacing:-.02em;margin:0;line-height:1;text-transform:uppercase;}
-  h1 span{color:var(--brass);}
+  h1{
+    font-weight:900;font-size:21px;letter-spacing:-.025em;margin:0;line-height:1;
+    text-transform:uppercase;font-style:italic;
+  }
+  h1 span{
+    color:var(--yellow);
+    text-shadow:0 0 14px rgba(255,229,0,.5), 2px 2px 0 var(--pink);
+  }
   .who{
     font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.1em;
-    text-transform:uppercase;color:var(--dim);text-align:right;line-height:1.3;
+    text-transform:uppercase;color:var(--dim);text-align:right;line-height:1.35;
   }
+  .who em{color:var(--cyan);font-style:normal;}
 
   .block{
-    border:1px solid var(--line);border-radius:6px;background:var(--panel);
+    border:1px solid var(--line);border-radius:7px;background:var(--panel);
     margin-bottom:14px;overflow:hidden;
   }
   .block > h2{
     font-family:"IBM Plex Mono",monospace;font-size:9px;font-weight:600;
-    letter-spacing:.16em;text-transform:uppercase;color:var(--brass);
+    letter-spacing:.17em;text-transform:uppercase;color:var(--pink-hi);
     margin:0;padding:9px 12px;background:var(--panel-2);border-bottom:1px solid var(--line);
     display:flex;align-items:center;justify-content:space-between;gap:8px;
   }
+  .h2-side{color:var(--dim);letter-spacing:.1em;}
   .pad{padding:12px;}
 
-  /* ---------- level switch ---------- */
   /* ---------- action economy ---------- */
   .econ{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;padding:12px;}
   .slot{
-    border:1px solid var(--line);border-radius:5px;background:var(--ink);
+    border:1px solid var(--line);border-radius:6px;background:var(--void);
     padding:9px 6px;text-align:center;min-height:64px;
     display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;
   }
   .slot .box{
-    width:22px;height:22px;border:1px solid var(--line);border-radius:4px;
+    width:22px;height:22px;border:1px solid var(--line);border-radius:5px;
     display:flex;align-items:center;justify-content:center;flex:none;
-    font-size:14px;line-height:1;color:transparent;
+    font-size:14px;line-height:1;color:transparent;font-weight:700;
   }
   .slot .nm{
     font-family:"IBM Plex Mono",monospace;font-size:8.5px;letter-spacing:.1em;
     text-transform:uppercase;color:var(--dim);
   }
-  .slot.used{border-color:var(--brass);background:var(--brass-wash);}
-  .slot.used .box{background:var(--brass);border-color:var(--brass);color:#12100B;}
+  .slot.used{border-color:var(--pink);background:var(--pink-wash);}
+  .slot.used .box{background:var(--pink);border-color:var(--pink);color:#1A0010;}
   .slot.used .nm{color:var(--text);}
-  .slot.over{border-color:var(--brass-hi);}
-  .slot.over .box{background:var(--brass-hi);border-color:var(--brass-hi);}
-  .slot.over .nm{color:var(--brass-hi);}
+  .slot.over{border-color:var(--yellow);}
+  .slot.over .box{background:var(--yellow);border-color:var(--yellow);color:#241F00;}
+  .slot.over .nm{color:var(--yellow-hi);}
   .slot.tap{cursor:pointer;}
   .econ-note{
     padding:0 12px 12px;font-family:"IBM Plex Mono",monospace;
-    font-size:10px;line-height:1.55;color:var(--dim);
+    font-size:10px;line-height:1.6;color:var(--dim);
   }
-  .econ-note b{color:var(--brass-hi);font-weight:600;}
-  .econ-note .warn{color:var(--brass-hi);}
+  .econ-note b{color:var(--yellow-hi);font-weight:600;}
 
   .focus{
     display:flex;align-items:center;gap:9px;
@@ -95,59 +130,98 @@
     text-transform:uppercase;color:var(--dim);flex:1;line-height:1.35;
   }
   .focus .nm b{
-    display:block;font-size:13px;letter-spacing:.04em;color:var(--brass-hi);
+    display:block;font-size:13px;letter-spacing:.04em;color:var(--cyan);
     font-weight:600;margin-top:2px;
   }
   .focus.drained .nm b{color:var(--dim);}
-  .focus.over .nm b{color:var(--brass-hi);}
+  .focus.over .nm b{color:var(--yellow-hi);}
   .pips{display:flex;gap:9px;flex:none;}
   .pip{
-    width:16px;height:16px;border-radius:50%;
-    border:1px solid var(--brass);background:var(--brass);
+    width:17px;height:17px;border-radius:50%;
+    border:1px solid var(--cyan);background:var(--cyan);
+    box-shadow:0 0 8px rgba(0,229,255,.45);
   }
-  .pip.out{background:transparent;border-color:var(--line);}
+  .pip.out{background:transparent;border-color:var(--line);box-shadow:none;}
 
-  /* ---------- once-per-rest trackers ---------- */
-  .rests{display:grid;grid-template-columns:1fr 1fr;gap:7px;padding:12px;border-top:1px solid var(--line-soft);}
-  .rest{
-    border:1px solid var(--line);border-radius:5px;background:var(--ink);padding:9px;
+  .fp-bar{
+    display:flex;align-items:center;gap:8px;padding:0 12px 11px;
   }
-  .rest .rn{
-    font-family:"IBM Plex Mono",monospace;font-size:8.5px;letter-spacing:.1em;
-    text-transform:uppercase;color:var(--dim);display:block;line-height:1.3;
+  .fp-bar button{
+    appearance:none;width:34px;height:30px;flex:none;border-radius:6px;
+    border:1px solid var(--line);background:var(--void);color:var(--mute);
+    font-size:17px;line-height:1;cursor:pointer;padding:0;
   }
-  .rest .rs{font-size:11px;color:var(--mute);display:block;margin-top:3px;line-height:1.3;}
-  .charges{display:flex;gap:6px;margin-top:7px;}
-  .charge{
-    width:19px;height:19px;border-radius:3px;border:1px solid var(--brass);
-    background:var(--brass);cursor:pointer;padding:0;appearance:none;
+  .fp-bar button:active{border-color:var(--cyan);color:var(--cyan);}
+  .fp-note{
+    font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.05em;
+    color:var(--dimmer);flex:1;line-height:1.4;
   }
-  .charge.spent{background:transparent;border-color:var(--line);}
 
-  /* ---------- loadout ---------- */
-  .eff{border-top:1px solid var(--line-soft);padding:12px;}
+  .rests{display:flex;gap:7px;padding:0 12px 12px;}
+  .rests button{
+    appearance:none;flex:1;border:1px solid var(--line);border-radius:6px;
+    background:var(--void);color:var(--mute);
+    font-family:"IBM Plex Mono",monospace;font-size:9px;letter-spacing:.11em;
+    text-transform:uppercase;padding:10px 4px;cursor:pointer;
+  }
+  .rests button:active{border-color:var(--pink);color:var(--pink-hi);}
+
+  .charge-row{
+    display:flex;align-items:center;gap:9px;padding:11px 12px;
+    border-top:1px solid var(--line-soft);
+  }
+  .charge-row .cn{
+    flex:1;font-size:13px;line-height:1.3;
+  }
+  .charge-row .cn b{font-weight:600;display:block;}
+  .charge-row .cn small{
+    font-family:"IBM Plex Mono",monospace;font-size:9px;letter-spacing:.04em;
+    color:var(--dim);display:block;margin-top:3px;
+  }
+  .charge-row input[type=number]{
+    width:56px;flex:none;background:var(--void);border:1px solid var(--line);
+    border-radius:6px;color:var(--text);font-family:"IBM Plex Mono",monospace;
+    font-size:14px;text-align:center;padding:8px 2px;-moz-appearance:textfield;
+  }
+  .charge-row input::-webkit-outer-spin-button,
+  .charge-row input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
+  .charge-row button{
+    appearance:none;flex:none;border:1px solid var(--line);border-radius:6px;
+    background:var(--void);color:var(--dim);
+    font-family:"IBM Plex Mono",monospace;font-size:9px;letter-spacing:.11em;
+    text-transform:uppercase;padding:9px 12px;cursor:pointer;
+  }
+  .charge-row button.armed{border-color:var(--cyan);color:var(--cyan);}
+  .charge-row button:disabled{opacity:.4;cursor:default;}
+  .jaunt{display:flex;gap:7px;flex:none;}
+  .jaunt button{
+    width:24px;height:24px;border-radius:5px;border:1px solid var(--pink);
+    background:var(--pink);cursor:pointer;padding:0;appearance:none;
+    box-shadow:0 0 8px rgba(255,45,149,.4);
+  }
+  .jaunt button.spent{background:transparent;border-color:var(--line);box-shadow:none;}
+
+  /* ---------- club switch ---------- */
+  .eff{padding:12px;border-top:1px solid var(--line-soft);}
   .eff-top{display:flex;align-items:flex-start;gap:10px;}
   .eff-name{flex:1;line-height:1.3;}
   .eff-name b{font-size:14px;font-weight:600;display:block;}
   .eff-name small{
-    font-family:"IBM Plex Mono",monospace;font-size:9px;letter-spacing:.06em;
-    color:var(--dim);display:block;margin-top:3px;
+    font-family:"IBM Plex Mono",monospace;font-size:9px;letter-spacing:.05em;
+    color:var(--dim);display:block;margin-top:3px;line-height:1.5;
   }
   .sw{
-    width:46px;height:26px;border-radius:13px;border:1px solid var(--line);
-    background:var(--ink);position:relative;flex:none;cursor:pointer;padding:0;appearance:none;
+    width:47px;height:27px;border-radius:14px;border:1px solid var(--line);
+    background:var(--void);position:relative;flex:none;cursor:pointer;padding:0;appearance:none;
     transition:background .15s,border-color .15s;
   }
   .sw::after{
-    content:"";position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;
+    content:"";position:absolute;top:2px;left:2px;width:21px;height:21px;border-radius:50%;
     background:var(--dim);transition:transform .15s,background .15s;
   }
-  .sw[aria-pressed="true"]{background:var(--brass-wash);border-color:var(--brass);}
-  .sw[aria-pressed="true"]::after{transform:translateX(20px);background:var(--brass);}
-  .eff-list{margin:9px 0 0;padding:0 0 0 15px;font-size:12.5px;line-height:1.55;color:var(--mute);}
-  .eff-list b{color:var(--text);font-weight:600;}
-  .eff-list em{color:var(--brass-hi);font-style:normal;font-weight:600;}
-  .eff.off .eff-list{opacity:.4;}
+  .sw[aria-pressed="true"]{background:var(--pink-wash);border-color:var(--pink);}
+  .sw[aria-pressed="true"]::after{transform:translateX(20px);background:var(--pink);}
+  .eff.off .eff-name small{opacity:.45;}
 
   .now{
     display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);
@@ -158,50 +232,91 @@
     font-family:"IBM Plex Mono",monospace;font-size:8.5px;letter-spacing:.13em;
     text-transform:uppercase;color:var(--dim);display:block;
   }
-  .now .v{font-size:16px;font-weight:600;display:block;margin-top:3px;}
-  .now .v em{color:var(--brass-hi);font-style:normal;}
+  .now .v{font-size:16px;font-weight:700;display:block;margin-top:3px;}
+  .now .v em{color:var(--yellow);font-style:normal;}
+
+  /* ---------- deflect ---------- */
+  .defl{padding:12px;}
+  .defl-in{display:flex;gap:9px;align-items:flex-end;}
+  .defl-f{flex:1;}
+  .defl-f label{
+    font-family:"IBM Plex Mono",monospace;font-size:8.5px;letter-spacing:.11em;
+    text-transform:uppercase;color:var(--dim);display:block;margin-bottom:5px;line-height:1.3;
+  }
+  .defl-f input{
+    width:100%;background:var(--void);border:1px solid var(--line);border-radius:6px;
+    color:var(--text);font-family:"IBM Plex Mono",monospace;font-size:17px;
+    text-align:center;padding:9px 2px;-moz-appearance:textfield;
+  }
+  .defl-f input::-webkit-outer-spin-button,
+  .defl-f input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
+  .defl-out{
+    margin-top:12px;border:1px solid var(--line);border-radius:6px;
+    background:var(--void);padding:12px;text-align:center;
+  }
+  .defl-out .n{font-weight:900;font-size:40px;line-height:1;letter-spacing:-.03em;display:block;}
+  .defl-out .n.zero{color:var(--cyan);text-shadow:0 0 16px rgba(0,229,255,.5);}
+  .defl-out .n.empty{color:var(--line);}
+  .defl-out .cap{
+    font-family:"IBM Plex Mono",monospace;font-size:9px;letter-spacing:.13em;
+    text-transform:uppercase;color:var(--dim);margin-top:7px;
+  }
+  .defl-out .sub{font-size:11.5px;color:var(--mute);margin-top:7px;line-height:1.55;}
+  .defl-out .sub b{color:var(--text);}
 
   /* ---------- attack card ---------- */
   .card-top{padding:12px;border-bottom:1px solid var(--line-soft);background:var(--panel-2);}
   .card-top .line{display:flex;align-items:center;justify-content:space-between;gap:8px;}
   .idx{
     font-family:"IBM Plex Mono",monospace;font-size:9px;font-weight:600;
-    letter-spacing:.16em;text-transform:uppercase;color:var(--brass);
+    letter-spacing:.16em;text-transform:uppercase;color:var(--pink-hi);
   }
   .kill{
-    appearance:none;border:1px solid var(--line);background:var(--ink);color:var(--dim);
-    width:26px;height:26px;border-radius:5px;font-size:16px;line-height:1;cursor:pointer;padding:0;
+    appearance:none;border:1px solid var(--line);background:var(--void);color:var(--dim);
+    width:27px;height:27px;border-radius:6px;font-size:16px;line-height:1;cursor:pointer;padding:0;
   }
   .kill.hidden{visibility:hidden;}
   select{
     appearance:none;width:100%;margin-top:9px;
-    background:var(--ink);color:var(--text);border:1px solid var(--line);
-    border-radius:5px;padding:9px 30px 9px 10px;font-family:inherit;font-size:14px;
-    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='11' height='7'><path d='M1 1l4.5 4.5L10 1' stroke='%23666C71' stroke-width='1.6' fill='none' stroke-linecap='round'/></svg>");
+    background:var(--void);color:var(--text);border:1px solid var(--line);
+    border-radius:6px;padding:10px 30px 10px 10px;font-family:inherit;font-size:16px;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='11' height='7'><path d='M1 1l4.5 4.5L10 1' stroke='%238A6FB2' stroke-width='1.6' fill='none' stroke-linecap='round'/></svg>");
     background-repeat:no-repeat;background-position:right 11px center;
   }
   select.unset{color:var(--dim);}
   select:disabled{opacity:.5;}
 
-  /* segmented: what this strike does */
-  .seg{display:flex;gap:0;margin-top:9px;border:1px solid var(--line);border-radius:5px;overflow:hidden;}
-  .seg button{
-    appearance:none;flex:1;border:0;background:var(--ink);color:var(--dim);
-    font-family:"IBM Plex Mono",monospace;font-size:9px;font-weight:600;
-    letter-spacing:.1em;text-transform:uppercase;padding:7px 4px;cursor:pointer;
+  /* grapple toggle sits on the card head */
+  .grab{
+    display:flex;align-items:center;gap:9px;margin-top:9px;
+    border:1px solid var(--line);border-radius:6px;padding:8px 10px;
+    background:var(--void);cursor:pointer;
   }
-  .seg button + button{border-left:1px solid var(--line);}
-  .seg button.on{background:var(--brass-wash);color:var(--brass-hi);}
-  .seg.locked{opacity:.45;}
+  .grab input{
+    appearance:none;width:19px;height:19px;flex:none;border:1px solid var(--line);
+    border-radius:5px;background:transparent;cursor:pointer;position:relative;margin:0;
+  }
+  .grab input:checked{background:var(--cyan);border-color:var(--cyan);}
+  .grab input:checked::after{
+    content:"\2713";position:absolute;inset:0;display:flex;align-items:center;
+    justify-content:center;color:#00232A;font-size:12px;font-weight:700;
+  }
+  .grab .gl{
+    flex:1;font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.09em;
+    text-transform:uppercase;color:var(--dim);line-height:1.4;
+  }
+  .grab.on{border-color:var(--cyan);background:var(--cyan-wash);}
+  .grab.on .gl{color:var(--cyan-hi);}
+  .grab.hide{display:none;}
 
   .readout{padding:16px 0 12px;text-align:center;}
   .readout .n{
-    font-family:"Archivo",sans-serif;font-weight:800;font-size:62px;line-height:.9;
-    letter-spacing:-.03em;display:block;
+    font-family:"Archivo",sans-serif;font-weight:900;font-size:62px;line-height:.9;
+    letter-spacing:-.035em;display:block;font-style:italic;
   }
   .readout .n.empty{color:var(--line);}
-  .readout.crit .n{color:var(--brass-hi);}
-  .readout.fumble .n{color:var(--steel);}
+  .readout.crit .n{color:var(--yellow);text-shadow:0 0 22px rgba(255,229,0,.55);}
+  .readout.fumble .n{color:var(--dimmer);}
   .readout .lab{
     font-family:"IBM Plex Mono",monospace;font-size:9px;letter-spacing:.16em;
     text-transform:uppercase;color:var(--dim);margin-top:7px;
@@ -212,7 +327,25 @@
   }
   .readout .math b{color:var(--text);}
 
-  /* d20 wheel */
+  .card-ac{
+    display:flex;align-items:center;gap:10px;padding:9px 0 2px;
+    border-top:1px solid var(--line-soft);
+  }
+  .card-ac .k{
+    font-family:"IBM Plex Mono",monospace;font-size:9px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--dim);flex:1;
+  }
+  .card-ac .ac-val{font-weight:800;font-size:19px;color:var(--text);}
+  .verdict{
+    font-family:"IBM Plex Mono",monospace;font-size:9px;font-weight:600;
+    letter-spacing:.14em;text-transform:uppercase;padding:4px 9px;border-radius:5px;
+    border:1px solid transparent;
+  }
+  .verdict.hit{color:var(--cyan);border-color:var(--cyan-dim);background:var(--cyan-wash);}
+  .verdict.miss{color:var(--dimmer);border-color:var(--line);}
+  .verdict.crit{color:var(--yellow);border-color:var(--yellow-dim);background:var(--yellow-wash);}
+
+  /* wheels */
   .wheel-wrap{position:relative;margin:2px -12px 0;}
   .wheel{
     display:flex;gap:0;overflow-x:auto;scroll-snap-type:x mandatory;
@@ -221,25 +354,29 @@
   .wheel::-webkit-scrollbar{display:none;}
   .tick{
     appearance:none;flex:none;width:52px;height:52px;scroll-snap-align:center;
-    background:transparent;border:0;color:var(--dim);
-    font-family:"Archivo",sans-serif;font-weight:600;font-size:19px;cursor:pointer;
+    background:transparent;border:0;color:var(--dimmer);
+    font-family:"Archivo",sans-serif;font-weight:700;font-size:19px;cursor:pointer;
     transition:color .12s,transform .12s;padding:0;
   }
   .tick.near{color:var(--mute);}
-  .tick.sel{color:var(--text);transform:scale(1.28);font-weight:800;}
-  .tick.sel.hot{color:var(--brass-hi);}
+  .tick.sel{color:var(--text);transform:scale(1.3);font-weight:900;}
+  .tick.sel.hot{color:var(--yellow);}
+  .wheel-wrap.ac .tick{width:44px;height:44px;font-size:17px;}
+  .wheel-wrap.ac .tick.sel{color:var(--cyan);}
   .wheel-frame{
     position:absolute;top:6px;left:50%;transform:translateX(-50%);
-    width:52px;height:52px;border:1px solid var(--line);border-radius:7px;
+    width:52px;height:52px;border:1px solid var(--line);border-radius:8px;
     pointer-events:none;transition:border-color .15s;
   }
-  .wheel-frame.live{border-color:var(--brass);}
+  .wheel-wrap.ac .wheel-frame{width:44px;height:44px;}
+  .wheel-frame.live{border-color:var(--pink);box-shadow:0 0 14px rgba(255,45,149,.3);}
+  .wheel-wrap.ac .wheel-frame.live{border-color:var(--cyan);box-shadow:0 0 14px rgba(0,229,255,.3);}
   .fade{position:absolute;top:0;bottom:0;width:56px;pointer-events:none;}
   .fade.l{left:0;background:linear-gradient(90deg,var(--panel),transparent);}
   .fade.r{right:0;background:linear-gradient(270deg,var(--panel),transparent);}
   .wheel-cap{
     font-family:"IBM Plex Mono",monospace;font-size:9px;letter-spacing:.1em;
-    text-transform:uppercase;color:var(--dim);text-align:center;margin-top:2px;
+    text-transform:uppercase;color:var(--dimmer);text-align:center;margin-top:2px;
   }
 
   .sect{
@@ -247,7 +384,7 @@
     letter-spacing:.14em;text-transform:uppercase;color:var(--dim);
     margin:16px 0 7px;padding-top:11px;border-top:1px solid var(--line-soft);
   }
-  .sect .x2{color:var(--brass-hi);}
+  .sect .x2{color:var(--yellow);}
 
   .row{
     display:flex;align-items:center;gap:9px;padding:7px 0;
@@ -263,71 +400,120 @@
   .row.muted{opacity:.35;}
   .row input[type=checkbox]{
     appearance:none;width:19px;height:19px;flex:none;border:1px solid var(--line);
-    border-radius:4px;background:var(--ink);cursor:pointer;position:relative;margin:0;
+    border-radius:5px;background:var(--void);cursor:pointer;position:relative;margin:0;
   }
-  .row input[type=checkbox]:checked{background:var(--brass);border-color:var(--brass);}
+  .row input[type=checkbox]:checked{background:var(--pink);border-color:var(--pink);}
   .row input[type=checkbox]:checked::after{
     content:"\2713";position:absolute;inset:0;display:flex;align-items:center;
-    justify-content:center;color:#12100B;font-size:12px;font-weight:700;
+    justify-content:center;color:#1A0010;font-size:12px;font-weight:700;
   }
   .row input[type=number]{
-    width:58px;flex:none;background:var(--ink);border:1px solid var(--line);
-    border-radius:5px;color:var(--text);font-family:"IBM Plex Mono",monospace;
-    font-size:14px;text-align:center;padding:7px 2px;-moz-appearance:textfield;
+    width:58px;flex:none;background:var(--void);border:1px solid var(--line);
+    border-radius:6px;color:var(--text);font-family:"IBM Plex Mono",monospace;
+    font-size:16px;text-align:center;padding:7px 2px;-moz-appearance:textfield;
   }
   .row input[type=number]::-webkit-outer-spin-button,
   .row input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
   .row input:disabled{opacity:.4;}
-  .row .pair{display:flex;align-items:center;gap:5px;flex:none;}
-  .row .pair .x{color:var(--dim);font-family:"IBM Plex Mono",monospace;font-size:12px;}
-  .row .die{width:52px;}
-  .row .die.crit{border-color:var(--brass-dim);color:var(--brass-hi);}
-  .row .drop{
-    appearance:none;border:0;background:transparent;color:var(--dim);
-    font-size:15px;cursor:pointer;padding:0 2px;flex:none;
+
+  /* die strips */
+  .die-row{padding:9px 0;border-bottom:1px solid var(--line-soft);}
+  .die-row:last-child{border-bottom:0;}
+  .die-row.muted{opacity:.32;}
+  .die-head{display:flex;align-items:center;gap:8px;margin-bottom:7px;}
+  .die-head .name{flex:1;font-size:13px;line-height:1.25;}
+  .die-head .name b{font-weight:600;display:block;}
+  .die-head .name small{
+    font-family:"IBM Plex Mono",monospace;font-size:9px;letter-spacing:.05em;
+    color:var(--dim);display:block;margin-top:2px;
   }
-  .is-crit .row .die.crit{border-color:var(--brass);}
+  .die-head .drop{
+    appearance:none;border:0;background:transparent;color:var(--dim);
+    font-size:16px;cursor:pointer;padding:0 2px;flex:none;
+  }
+  .die-strip{display:flex;gap:5px;align-items:center;flex-wrap:wrap;}
+  .die-strip.crit{margin-top:6px;}
+  .striptag{
+    font-family:"IBM Plex Mono",monospace;font-size:8px;font-weight:600;
+    letter-spacing:.12em;text-transform:uppercase;color:var(--yellow);
+    padding-right:3px;flex:none;
+  }
+  .face{
+    appearance:none;flex:1;min-width:34px;height:38px;border-radius:6px;
+    border:1px solid var(--line);background:var(--void);color:var(--mute);
+    font-family:"Archivo",sans-serif;font-weight:700;font-size:15px;cursor:pointer;padding:0;
+  }
+  .face.max{border-color:var(--pink-dim);color:var(--pink-hi);}
+  .face.one{border-color:var(--line);color:var(--dimmer);}
+  .face.on{
+    background:var(--pink);border-color:var(--pink);color:#1A0010;
+    box-shadow:0 0 12px rgba(255,45,149,.45);
+  }
+  .die-strip.crit .face.on{
+    background:var(--yellow);border-color:var(--yellow);color:#241F00;
+    box-shadow:0 0 12px rgba(255,229,0,.45);
+  }
+  .face:disabled{opacity:.35;cursor:default;}
+
+  /* Open Hand picker */
+  .oh{margin-top:11px;border:1px solid var(--yellow-dim);border-radius:6px;overflow:hidden;}
+  .oh-h{
+    font-family:"IBM Plex Mono",monospace;font-size:8.5px;font-weight:600;
+    letter-spacing:.12em;text-transform:uppercase;color:var(--yellow);
+    padding:8px 10px;background:var(--yellow-wash);
+  }
+  .oh-b{display:flex;}
+  .oh-b button{
+    appearance:none;flex:1;border:0;border-left:1px solid var(--line);background:var(--void);
+    color:var(--dim);font-family:"IBM Plex Mono",monospace;font-size:9px;font-weight:600;
+    letter-spacing:.08em;text-transform:uppercase;padding:10px 3px;cursor:pointer;line-height:1.4;
+  }
+  .oh-b button:first-child{border-left:0;}
+  .oh-b button small{display:block;font-size:8px;letter-spacing:.03em;color:var(--dimmer);margin-top:3px;}
+  .oh-b button.on{background:var(--yellow-wash);color:var(--yellow);}
+  .oh-b button.on small{color:var(--yellow-hi);}
+
+  /* DM callout — the line you read out loud */
+  .dm{
+    margin-top:11px;border:1px solid var(--cyan-dim);border-radius:6px;
+    background:var(--cyan-wash);padding:11px 12px;
+  }
+  .dm .dt{
+    font-family:"IBM Plex Mono",monospace;font-size:8.5px;font-weight:600;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--cyan);margin-bottom:6px;
+  }
+  .dm .dl{font-size:15px;line-height:1.45;color:var(--text);font-weight:600;}
+  .dm .dl em{color:var(--cyan-hi);font-style:normal;}
+  .dm .df{
+    font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.04em;
+    color:var(--mute);margin-top:6px;line-height:1.5;
+  }
+  .dm.pink{border-color:var(--pink-dim);background:var(--pink-wash);}
+  .dm.pink .dt{color:var(--pink-hi);}
+  .dm.pink .dl em{color:var(--pink-hi);}
 
   .add{
     appearance:none;width:100%;background:transparent;border:1px dashed var(--line);
-    border-radius:5px;color:var(--dim);font-family:"IBM Plex Mono",monospace;
+    border-radius:6px;color:var(--dim);font-family:"IBM Plex Mono",monospace;
     font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;
-    padding:9px;margin-top:9px;cursor:pointer;
+    padding:10px;margin-top:9px;cursor:pointer;
   }
-  .add:active{border-color:var(--brass);color:var(--brass-hi);}
+  .add:active{border-color:var(--pink);color:var(--pink-hi);}
 
   .note{
     display:flex;gap:9px;align-items:flex-start;
-    border:1px solid var(--brass-dim);background:var(--brass-wash);
-    border-radius:5px;padding:9px 10px;margin-top:11px;
+    border:1px solid var(--yellow-dim);background:var(--yellow-wash);
+    border-radius:6px;padding:9px 10px;margin-top:11px;
     font-size:12px;line-height:1.5;color:var(--mute);
   }
   .note b{color:var(--text);font-weight:600;}
   .note .tag{
     font-family:"IBM Plex Mono",monospace;font-size:8.5px;font-weight:600;
-    letter-spacing:.1em;text-transform:uppercase;color:var(--brass-hi);
+    letter-spacing:.1em;text-transform:uppercase;color:var(--yellow);
     flex:none;padding-top:2px;
   }
   .note.soft{border-color:var(--line);background:var(--panel-2);}
   .note.soft .tag{color:var(--dim);}
-
-  /* Open Hand picker */
-  .oh{margin-top:11px;border:1px solid var(--brass-dim);border-radius:5px;overflow:hidden;}
-  .oh-h{
-    font-family:"IBM Plex Mono",monospace;font-size:8.5px;font-weight:600;
-    letter-spacing:.12em;text-transform:uppercase;color:var(--brass-hi);
-    padding:7px 10px;background:var(--brass-wash);
-  }
-  .oh-b{display:flex;}
-  .oh-b button{
-    appearance:none;flex:1;border:0;border-left:1px solid var(--line);background:var(--ink);
-    color:var(--dim);font-family:"IBM Plex Mono",monospace;font-size:9px;font-weight:600;
-    letter-spacing:.08em;text-transform:uppercase;padding:9px 3px;cursor:pointer;line-height:1.4;
-  }
-  .oh-b button:first-child{border-left:0;}
-  .oh-b button small{display:block;font-size:8px;letter-spacing:.04em;color:var(--dim);margin-top:2px;}
-  .oh-b button.on{background:var(--brass-wash);color:var(--brass-hi);}
-  .oh-b button.on small{color:var(--brass);}
 
   .dmg-bar{
     display:flex;align-items:center;justify-content:space-between;gap:10px;
@@ -338,185 +524,142 @@
     font-family:"IBM Plex Mono",monospace;font-size:9px;letter-spacing:.14em;
     text-transform:uppercase;color:var(--dim);line-height:1.6;
   }
-  .dmg-bar .n{font-weight:800;font-size:32px;letter-spacing:-.02em;line-height:1;}
+  .dmg-bar .n{font-weight:900;font-size:32px;letter-spacing:-.025em;line-height:1;font-style:italic;}
   .dmg-bar .n.empty{color:var(--line);}
 
   #addAttack{
     appearance:none;width:100%;background:var(--panel);border:1px solid var(--line);
-    border-radius:6px;color:var(--text);font-family:"IBM Plex Mono",monospace;
+    border-radius:7px;color:var(--text);font-family:"IBM Plex Mono",monospace;
     font-size:10px;letter-spacing:.14em;text-transform:uppercase;
-    padding:14px;cursor:pointer;margin-bottom:14px;
+    padding:15px;cursor:pointer;margin-bottom:14px;
   }
-  #addAttack:active{border-color:var(--brass);color:var(--brass-hi);}
+  #addAttack:active{border-color:var(--pink);color:var(--pink-hi);}
 
+  /* readout + history */
+  .ro{border:1px solid var(--line);border-radius:6px;margin-bottom:8px;overflow:hidden;}
+  .ro-head{
+    display:flex;align-items:center;gap:8px;padding:7px 10px;background:var(--panel-2);
+    font-family:"IBM Plex Mono",monospace;font-size:9px;letter-spacing:.09em;text-transform:uppercase;
+  }
+  .ro-head .n{color:var(--pink-hi);font-weight:600;flex:none;}
+  .ro-head .t{color:var(--dim);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .ro-head .v{font-weight:600;flex:none;}
+  .ro-head .v.hit{color:var(--cyan);}
+  .ro-head .v.miss{color:var(--dimmer);}
+  .ro-head .v.crit{color:var(--yellow);}
+  .ro-body{display:flex;align-items:stretch;}
+  .ro-lines{flex:1;padding:8px 10px;}
+  .ro-line{display:flex;gap:8px;font-size:11.5px;line-height:1.5;padding:1px 0;}
+  .ro-line .k{
+    font-family:"IBM Plex Mono",monospace;font-size:9px;letter-spacing:.08em;
+    text-transform:uppercase;color:var(--dimmer);width:54px;flex:none;padding-top:2px;
+  }
+  .ro-line .f{flex:1;color:var(--mute);}
+  .ro-line .f b{color:var(--text);}
+  .ro-line .f em{color:var(--cyan);font-style:normal;}
+  .ro-total{
+    width:66px;flex:none;display:flex;align-items:center;justify-content:center;
+    font-weight:900;font-size:22px;border-left:1px solid var(--line);
+    background:var(--void);font-style:italic;
+  }
+  .ro-total.none{color:var(--line);}
+  .ro-sum{
+    font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.05em;
+    color:var(--dim);line-height:1.7;padding:9px 12px 12px;
+  }
+  .ro-sum b{color:var(--text);}
+  .ro-sum .big{
+    font-family:"Archivo",sans-serif;font-weight:900;font-size:25px;
+    color:var(--pink-hi);letter-spacing:-.02em;font-style:italic;
+  }
+
+  .ht{border:1px solid var(--line);border-radius:6px;margin-bottom:7px;overflow:hidden;}
+  .ht-head{
+    display:flex;align-items:center;gap:8px;padding:6px 10px;background:var(--panel-2);
+    font-family:"IBM Plex Mono",monospace;font-size:9px;letter-spacing:.09em;text-transform:uppercase;
+  }
+  .ht-head .n{color:var(--pink-hi);font-weight:600;}
+  .ht-head .tm{color:var(--dimmer);flex:1;}
+  .ht-head .tot{color:var(--text);font-weight:600;font-size:12px;}
+  .ht-line{padding:7px 10px;font-size:11px;line-height:1.6;color:var(--dim);}
+  .ht-line b{color:var(--mute);}
+  .hist-empty{
+    font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.05em;
+    color:var(--dimmer);padding:14px 12px;text-align:center;
+  }
+  .h2-btns{display:flex;gap:7px;padding:10px 12px;border-bottom:1px solid var(--line-soft);}
+  .h2-btns button{
+    appearance:none;flex:1;border:1px solid var(--line);border-radius:6px;
+    background:var(--void);color:var(--mute);
+    font-family:"IBM Plex Mono",monospace;font-size:9px;letter-spacing:.11em;
+    text-transform:uppercase;padding:9px 4px;cursor:pointer;
+  }
+  .h2-btns button.arm{border-color:var(--yellow);color:var(--yellow);}
+
+  /* bottom bar */
   .bar{
     position:fixed;left:0;right:0;bottom:0;z-index:20;
-    background:rgba(11,12,13,.96);backdrop-filter:blur(10px);
+    background:rgba(13,3,24,.97);backdrop-filter:blur(12px);
     border-top:1px solid var(--line);
-    padding:11px 12px calc(11px + env(safe-area-inset-bottom));
-    display:flex;align-items:center;gap:11px;
+    padding:10px 12px calc(10px + env(safe-area-inset-bottom));
   }
+  .bar-top{display:flex;align-items:center;gap:11px;margin-bottom:9px;}
   .bar .lab{
     font-family:"IBM Plex Mono",monospace;font-size:9px;letter-spacing:.14em;
     text-transform:uppercase;color:var(--dim);flex:1;line-height:1.5;
   }
   .bar .lab small{display:block;color:var(--mute);letter-spacing:.03em;font-size:10px;margin-top:2px;}
-  .bar .n{font-weight:800;font-size:38px;letter-spacing:-.03em;line-height:1;color:var(--brass-hi);}
-  .bar button{
-    appearance:none;background:transparent;border:1px solid var(--line);border-radius:5px;
+  .bar .n{
+    font-weight:900;font-size:38px;letter-spacing:-.03em;line-height:1;
+    color:var(--yellow);font-style:italic;text-shadow:0 0 18px rgba(255,229,0,.4);
+  }
+  .bar-btns{display:flex;align-items:center;gap:7px;}
+  .bar-btns button{
+    appearance:none;background:transparent;border:1px solid var(--line);border-radius:6px;
     color:var(--mute);font-family:"IBM Plex Mono",monospace;font-size:9px;
-    letter-spacing:.1em;text-transform:uppercase;padding:9px 11px;cursor:pointer;flex:none;
+    letter-spacing:.11em;text-transform:uppercase;padding:10px 10px;cursor:pointer;flex:1;
   }
-  .bar button:active{border-color:var(--brass);color:var(--brass-hi);}
+  .bar-btns button.go{background:var(--pink);border-color:var(--pink);color:#1A0010;font-weight:600;}
+  .bar-btns button.go:disabled{background:transparent;color:var(--dimmer);border-color:var(--line);}
+  .bar-btns button.arm{border-color:var(--yellow);color:var(--yellow);background:transparent;}
+  .combat{display:flex;gap:7px;flex:none;}
+  .combat .st{
+    border:1px solid var(--line);border-radius:6px;padding:5px 9px;text-align:center;min-width:52px;
+  }
+  .combat .st i{
+    font-family:"IBM Plex Mono",monospace;font-size:8px;letter-spacing:.11em;
+    text-transform:uppercase;color:var(--dimmer);font-style:normal;display:block;
+  }
+  .combat .st b{font-size:14px;font-weight:700;display:block;margin-top:1px;}
+  .combat .st.best b{color:var(--cyan);}
+  .combat .st.best.fresh{border-color:var(--cyan);}
 
-
-  /* ---------- tabs ---------- */
-  .tabs{
-    display:flex;gap:0;border:1px solid var(--line);border-radius:6px;
-    overflow:hidden;margin-bottom:14px;
-  }
-  .tabs button{
-    appearance:none;flex:1;border:0;background:var(--panel);color:var(--dim);
-    font-family:"IBM Plex Mono",monospace;font-size:10px;font-weight:600;
-    letter-spacing:.14em;text-transform:uppercase;padding:12px 6px;cursor:pointer;
-  }
-  .tabs button + button{border-left:1px solid var(--line);}
-  .tabs button.on{background:var(--brass);color:#12100B;}
-  .tab[hidden]{display:none;}
-
-  /* ---------- deflect ---------- */
-  .defl{padding:12px;}
-  .defl-in{display:flex;gap:9px;align-items:flex-end;}
-  .defl-f{flex:1;}
-  .defl-f label{
-    font-family:"IBM Plex Mono",monospace;font-size:8.5px;letter-spacing:.11em;
-    text-transform:uppercase;color:var(--dim);display:block;margin-bottom:5px;line-height:1.3;
-  }
-  .defl-f input{
-    width:100%;background:var(--ink);border:1px solid var(--line);border-radius:5px;
-    color:var(--text);font-family:"IBM Plex Mono",monospace;font-size:17px;
-    text-align:center;padding:9px 2px;-moz-appearance:textfield;
-  }
-  .defl-f input::-webkit-outer-spin-button,
-  .defl-f input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
-  .defl-out{
-    margin-top:12px;border:1px solid var(--line);border-radius:5px;
-    background:var(--ink);padding:12px;text-align:center;
-  }
-  .defl-out .n{font-weight:800;font-size:40px;line-height:1;letter-spacing:-.03em;display:block;}
-  .defl-out .n.zero{color:var(--brass-hi);}
-  .defl-out .n.empty{color:var(--line);}
-  .defl-out .cap{
-    font-family:"IBM Plex Mono",monospace;font-size:9px;letter-spacing:.13em;
-    text-transform:uppercase;color:var(--dim);margin-top:7px;
-  }
-  .defl-out .sub{font-size:11.5px;color:var(--mute);margin-top:7px;line-height:1.5;}
-
-  /* ---------- kit tab ---------- */
-  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);}
-  .stats > div{background:var(--panel-2);padding:10px 6px;text-align:center;}
-  .stats .k{
-    font-family:"IBM Plex Mono",monospace;font-size:7.5px;letter-spacing:.1em;
-    text-transform:uppercase;color:var(--dim);display:block;line-height:1.3;
-  }
-  .stats .v{font-size:19px;font-weight:800;display:block;margin-top:3px;letter-spacing:-.02em;}
-
-  .abil{display:grid;grid-template-columns:repeat(6,1fr);gap:1px;background:var(--line);}
-  .abil > div{background:var(--panel-2);padding:9px 3px;text-align:center;}
-  .abil .k{
-    font-family:"IBM Plex Mono",monospace;font-size:7.5px;letter-spacing:.08em;
-    text-transform:uppercase;color:var(--dim);display:block;
-  }
-  .abil .v{font-size:16px;font-weight:700;display:block;margin-top:2px;}
-  .abil .m{
-    font-family:"IBM Plex Mono",monospace;font-size:9.5px;color:var(--brass);display:block;margin-top:1px;
-  }
-  .abil .sv{
-    font-family:"IBM Plex Mono",monospace;font-size:8px;color:var(--dim);display:block;margin-top:3px;
-  }
-  .abil .sv.prof{color:var(--brass-hi);}
-
-  .kv{display:flex;gap:9px;padding:8px 0;border-bottom:1px solid var(--line-soft);font-size:13.5px;}
-  .kv:last-child{border-bottom:0;}
-  .kv .kn{flex:1;line-height:1.35;}
-  .kv .kn b{font-weight:600;display:block;}
-  .kv .kn small{
-    font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.03em;
-    color:var(--dim);display:block;margin-top:3px;line-height:1.5;
-  }
-  .kv .kn small em{color:var(--brass-hi);font-style:normal;font-weight:600;}
-  .kv .tagv{
-    font-family:"IBM Plex Mono",monospace;font-size:9px;letter-spacing:.08em;
-    text-transform:uppercase;color:var(--brass);flex:none;padding-top:2px;text-align:right;
-    line-height:1.4;max-width:104px;
-  }
-  .kv.spent{opacity:.4;}
-  .kv.spent .kn b{text-decoration:line-through;}
-
-  .grp{
-    font-family:"IBM Plex Mono",monospace;font-size:8.5px;font-weight:600;
-    letter-spacing:.15em;text-transform:uppercase;color:var(--brass);
-    margin:14px 0 2px;padding-top:11px;border-top:1px solid var(--line-soft);
-  }
-  .grp:first-child{margin-top:0;padding-top:0;border-top:0;}
-
-  .purse{display:flex;align-items:center;gap:11px;padding:12px;}
-  .purse .pl{
-    font-family:"IBM Plex Mono",monospace;font-size:9px;letter-spacing:.14em;
-    text-transform:uppercase;color:var(--dim);flex:1;line-height:1.4;
-  }
-  .purse input{
-    width:104px;flex:none;background:var(--ink);border:1px solid var(--line);
-    border-radius:5px;color:var(--brass-hi);font-family:"Archivo",sans-serif;
-    font-weight:800;font-size:26px;text-align:center;padding:7px 2px;-moz-appearance:textfield;
-  }
-  .purse input::-webkit-outer-spin-button,
-  .purse input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
-  .purse .gp{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--dim);flex:none;}
-
-  .cap-row{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;padding:12px;}
-  .cap-box{border:1px solid var(--line);border-radius:5px;background:var(--ink);padding:9px 6px;text-align:center;}
-  .cap-box .cn{
-    font-family:"IBM Plex Mono",monospace;font-size:7.5px;letter-spacing:.09em;
-    text-transform:uppercase;color:var(--dim);display:block;line-height:1.3;
-  }
-  .cap-box .cv{font-size:15px;font-weight:700;display:block;margin-top:4px;}
-  .cap-box.full{border-color:var(--brass);}
-  .cap-box.full .cv{color:var(--brass-hi);}
-
-  .use{
-    appearance:none;border:1px solid var(--line);background:var(--ink);color:var(--dim);
-    font-family:"IBM Plex Mono",monospace;font-size:8.5px;letter-spacing:.1em;
-    text-transform:uppercase;padding:6px 9px;border-radius:4px;cursor:pointer;flex:none;
-  }
-  .use.on{border-color:var(--brass);color:var(--brass-hi);}
-
-  @media (prefers-reduced-motion:reduce){
-    *{transition:none !important;scroll-behavior:auto !important;}
-  }
-  :focus-visible{outline:2px solid var(--brass-hi);outline-offset:2px;}
-
+  @media (prefers-reduced-motion:reduce){ *{transition:none !important;scroll-behavior:auto !important;} }
+  :focus-visible{outline:2px solid var(--cyan);outline-offset:2px;}
   @media (min-width:560px){
     body{padding-left:20px;padding-right:20px;}
-    h1{font-size:24px;}
+    h1{font-size:25px;}
     .readout .n{font-size:74px;}
   }
 </style>
 </head>
 <body>
+
+<div class="gate" id="gate">
+  <div class="gate-in">
+    <h1>It's <span>Monkin'</span> Time</h1>
+    <p class="gate-line" id="gateLine">No session on record.</p>
+    <button type="button" class="gate-go" id="gateNew">Start a new session</button>
+    <button type="button" class="gate-alt" id="gateResume">Resume</button>
+  </div>
+</div>
+
 <div class="wrap">
 
   <header>
-    <h1>Main <span>Event</span></h1>
-    <div class="who">CM Monk<br><span id="whoLvl">Monk 3 &middot; Open Hand</span></div>
+    <h1>It's <span>Monkin'</span> Time</h1>
+    <div class="who">CM Monk<br><em>Monk 3 &middot; Open Hand</em></div>
   </header>
-
-  <div class="tabs" id="tabs" role="tablist">
-    <button type="button" data-t="turn" class="on" role="tab" aria-selected="true">This turn</button>
-    <button type="button" data-t="kit" role="tab" aria-selected="false">Kit</button>
-  </div>
-
-  <div class="tab" id="tabTurn">
 
   <!-- ============ ACTION ECONOMY ============ -->
   <div class="block">
@@ -527,51 +670,55 @@
       <div class="slot tap" data-k="reaction" role="button" tabindex="0"><span class="box">&#10003;</span><span class="nm">Reaction</span></div>
     </div>
     <div class="econ-note" id="econNote"></div>
+
     <div class="focus" id="focusRow">
       <span class="nm">Focus points<b id="focusCount">3 of 3 left</b></span>
       <span class="pips" id="pips"></span>
     </div>
+    <div class="fp-bar">
+      <button type="button" id="fpMinus" aria-label="Give back a focus point">&minus;</button>
+      <button type="button" id="fpPlus" aria-label="Spend a focus point">+</button>
+      <span class="fp-note" id="fpNote">banked 0 &middot; this turn 0</span>
+    </div>
     <div class="rests">
-      <div class="rest">
-        <span class="rn">Cloud's Jaunt</span>
-        <span class="rs">Bonus action &middot; teleport 30 ft</span>
-        <span class="charges" id="jauntCharges"></span>
-      </div>
-      <div class="rest">
-        <span class="rn">Uncanny Metabolism</span>
-        <span class="rs">On initiative &middot; refill focus, heal 3+1d6</span>
-        <span class="charges" id="metaCharges"></span>
-      </div>
+      <button type="button" id="shortRest">Short rest</button>
+      <button type="button" id="longRest">Long rest</button>
+    </div>
+
+    <div class="charge-row">
+      <span class="cn"><b>Uncanny Metabolism</b><small>on initiative &middot; all spent focus back, heal 1d6+3</small></span>
+      <button type="button" id="uncannyUse">Use</button>
+    </div>
+    <div class="charge-row">
+      <span class="cn"><b>Cloud's Jaunt</b><small>bonus action &middot; teleport 30 ft &middot; never provokes</small></span>
+      <span class="jaunt" id="jaunt"></span>
     </div>
   </div>
 
-  <!-- ============ LOADOUT ============ -->
+  <!-- ============ HANDS ============ -->
   <div class="block">
     <h2>Hands</h2>
-
     <div class="eff" id="effClub" style="border-top:0;">
       <div class="eff-top">
         <span class="eff-name">
           <b>+1 Club drawn</b>
-          <small>uncommon &middot; simple melee, so it counts as a monk weapon</small>
+          <small>simple melee, so it counts as a monk weapon &mdash; but Flurry and the free bonus
+          strike are <b>Unarmed Strikes</b> and get nothing from it. Club in hand means the horn is not.</small>
         </span>
         <button class="sw" type="button" id="swClub" aria-pressed="true" aria-label="Toggle the +1 Club"></button>
       </div>
-      <ul class="eff-list">
-        <li>Club strikes get <b>+1 to hit and +1 damage</b></li>
-        <li>Martial Arts <b>d6 replaces the club's d4</b></li>
-        <li>Flurry and the free bonus strike are <em>Unarmed Strikes</em> &mdash; the club does nothing for them</li>
-        <li>Club in hand means <b>the horn is not</b>. Encouraging Song needs a swap.</li>
-      </ul>
     </div>
-
     <div class="now">
       <div><span class="k">Club strike</span><span class="v" id="nowClub">+6 &middot; 1d6+4</span></div>
       <div><span class="k">Unarmed strike</span><span class="v" id="nowFist">+5 &middot; 1d6+3</span></div>
     </div>
+    <div class="now">
+      <div><span class="k">Monk DC &middot; Wis</span><span class="v"><em>12</em></span></div>
+      <div><span class="k">Grapple DC &middot; Dex</span><span class="v"><em>13</em></span></div>
+    </div>
   </div>
 
-  <!-- ============ DEFLECT ATTACKS ============ -->
+  <!-- ============ DEFLECT ============ -->
   <div class="block">
     <h2>Deflect Attacks &middot; reaction</h2>
     <div class="defl">
@@ -595,119 +742,39 @@
 
   <div id="attacks"></div>
   <button id="addAttack" type="button">+ Add attack roll</button>
-  </div><!-- /tabTurn -->
 
-  <div class="tab" id="tabKit" hidden>
+  <!-- ============ HISTORY ============ -->
   <div class="block">
-    <h2>Monk 3 &middot; Warrior of the Open Hand</h2>
-    <div class="stats">
-      <div><span class="k">AC</span><span class="v">15</span></div>
-      <div><span class="k">Hit points</span><span class="v">21</span></div>
-      <div><span class="k">Speed</span><span class="v">45</span></div>
-      <div><span class="k">Hit dice</span><span class="v">3d8</span></div>
-      <div><span class="k">Initiative</span><span class="v">+3</span></div>
-      <div><span class="k">Passive perc.</span><span class="v">12</span></div>
-      <div><span class="k">Monk DC &middot; Wis</span><span class="v">12</span></div>
-      <div><span class="k">Grapple DC &middot; Dex</span><span class="v">13</span></div>
+    <h2>Roll history <span class="h2-side" id="histCount">0 turns</span></h2>
+    <div class="h2-btns">
+      <button type="button" id="histToggle">Show history</button>
+      <button type="button" id="sessionReset">Reset session</button>
     </div>
-    <div class="abil">
-      <div><span class="k">Str</span><span class="v">10</span><span class="m">+0</span><span class="sv prof">sv +2</span></div>
-      <div><span class="k">Dex</span><span class="v">17</span><span class="m">+3</span><span class="sv prof">sv +5</span></div>
-      <div><span class="k">Con</span><span class="v">12</span><span class="m">+1</span><span class="sv">sv +1</span></div>
-      <div><span class="k">Int</span><span class="v">8</span><span class="m">&minus;1</span><span class="sv">sv &minus;1</span></div>
-      <div><span class="k">Wis</span><span class="v">14</span><span class="m">+2</span><span class="sv">sv +2</span></div>
-      <div><span class="k">Cha</span><span class="v">14</span><span class="m">+2</span><span class="sv">sv +2</span></div>
-    </div>
-    <div class="pad">
-      <div class="kv"><span class="kn"><b>Acrobatics +5</b><small>Dex &middot; monk</small></span>
-        <span class="kn"><b>Athletics +2</b><small>Str &middot; monk</small></span></div>
-      <div class="kv"><span class="kn"><b>Performance +4</b><small>Cha &middot; pro wrestler</small></span>
-        <span class="kn"><b>Persuasion +4</b><small>Cha &middot; pro wrestler</small></span></div>
-      <div class="kv"><span class="kn"><small>Everything else is unproficient. <em>Your two save DCs are different numbers.</em> Focus features &mdash; Open Hand, the Deflect redirect, Stunning Strike later &mdash; run on 8 + <b>Wis</b> + prof = <b>12</b>. Grapple and Shove are the one Martial Arts carve-out, using Dex: <b>13</b>. Wisdom is not a dump stat here.</small></span></div>
-    </div>
+    <div id="hist" hidden></div>
   </div>
 
+  <!-- ============ TURN READOUT ============ -->
   <div class="block">
-    <h2>Features</h2>
-    <div class="pad">
-      <div class="grp">Warrior of the Open Hand &middot; level 3</div>
-      <div class="kv"><span class="kn"><b>Open Hand Technique</b><small>On each <em>Flurry of Blows</em> hit &mdash; not the club, not the free bonus strike &mdash; choose one effect. Unlimited uses.</small></span><span class="tagv">Flurry only</span></div>
-      <div class="kv"><span class="kn"><b>&mdash; Addle</b><small>No opportunity attacks until the start of its next turn. <em>No save.</em> Default pick for a caster-heavy party.</small></span><span class="tagv">no save</span></div>
-      <div class="kv"><span class="kn"><b>&mdash; Push</b><small>Pushed up to 15 ft away. Peels something off a caster without penalising your shooters.</small></span><span class="tagv">Str vs 13</span></div>
-      <div class="kv"><span class="kn"><b>&mdash; Topple</b><small>Knocked Prone. Advantage for melee, <em>disadvantage for every ally shooting it</em>. You are the only melee character in this party.</small></span><span class="tagv">Dex vs 13</span></div>
-
-      <div class="grp">Monk &middot; level 3</div>
-      <div class="kv"><span class="kn"><b>Deflect Attacks</b><small>Reaction. Reduce bludgeoning, piercing or slashing by <em>1d10+6</em> (avg 11.5). Drop it to 0 and you may spend 1 focus to throw it back &mdash; <em>no attack roll</em>: one creature makes a Dex save vs 12 or takes 2d6+3, nothing on a success. Within 5 ft if the hit was melee, 60 ft if ranged.</small></span><span class="tagv">reaction</span></div>
-      <div class="kv"><span class="kn"><b>Martial Arts (d6)</b><small>Dex for unarmed strikes and monk weapons. Dex sets your Grapple and Shove DC. Free bonus-action Unarmed Strike.</small></span></div>
-      <div class="kv"><span class="kn"><b>Monk's Focus &mdash; 3 points</b><small>Flurry of Blows 1 pt. Patient Defense free for Disengage, 1 pt to add Dodge. Step of the Wind free for Dash, 1 pt to add Disengage and double jumps.</small></span><span class="tagv">short rest</span></div>
-      <div class="kv"><span class="kn"><b>Uncanny Metabolism</b><small>On initiative: regain all spent focus and heal 3+1d6. Free. Burn your points in fight one, then trigger it in fight two.</small></span><span class="tagv">1 / long rest</span></div>
-      <div class="kv"><span class="kn"><b>Unarmored Defense</b><small>AC 10 + Dex + Wis. Any armour or shield shuts this off, and Martial Arts with it.</small></span></div>
-      <div class="kv"><span class="kn"><b>Unarmored Movement</b><small>+10 ft. Speed 45.</small></span></div>
-
-      <div class="grp">Goliath</div>
-      <div class="kv"><span class="kn"><b>Cloud's Jaunt</b><small>Bonus action, teleport 30 ft to a space you can see. Never provokes. Competes with Flurry for the same slot.</small></span><span class="tagv">2 / long rest</span></div>
-      <div class="kv"><span class="kn"><b>Powerful Build</b><small>Advantage on saves to <em>end</em> Grappled, and carrying capacity as one size up. It does <em>not</em> let you grapple bigger creatures.</small></span></div>
-      <div class="kv"><span class="kn"><b>Large Form</b><small>Bonus action, Large for 10 min, advantage on Str checks, +10 ft. Lets you grapple Huge creatures.</small></span><span class="tagv">level 5</span></div>
-
-      <div class="grp">Pro wrestler &middot; Musician</div>
-      <div class="kv"><span class="kn"><b>Encouraging Song</b><small>After a short or long rest, Heroic Inspiration to 2 allies who hear it. <em>Not you.</em> Instrument must be in hand, so the club has to come off.</small></span><span class="tagv">per rest</span></div>
-      <div class="kv"><span class="kn"><b>Grapple &middot; DC 13</b><small>An Unarmed Strike's effect, so it replaces damage and gets no Open Hand rider. Speed 0, and disadvantage on its attacks against anyone but you. Escaping costs the target its <em>whole action</em>. Max one size larger than you, needs a free hand.</small></span><span class="tagv">Str or Dex</span></div>
-    </div>
+    <h2>This turn</h2>
+    <div id="readout"></div>
+    <div class="ro-sum" id="roSum">nothing rolled yet</div>
   </div>
-
-  <div class="block">
-    <h2>Purse</h2>
-    <div class="purse">
-      <span class="pl">Gold<br><span style="color:var(--mute);letter-spacing:.03em;text-transform:none;font-size:11px;">tap to edit</span></span>
-      <input type="number" id="gold" value="64" min="0" inputmode="numeric" aria-label="Gold pieces">
-      <span class="gp">gp</span>
-    </div>
-  </div>
-
-  <div class="block">
-    <h2>Items</h2>
-    <div class="pad">
-      <div class="grp">Magic &mdash; one item</div>
-      <div class="kv" id="itClub"><span class="kn"><b>+1 Club</b><small>Uncommon, no attunement. Gift from Grimbeck. Simple melee, so it counts as a monk weapon: +6 to hit, 1d6+4, and the d6 replaces the club's d4. <em>Does nothing for Flurry.</em></small></span><span class="tagv">uncommon</span></div>
-      <div class="kv" id="itPotion"><span class="kn"><b>Potion of Healing</b><small>Regain 2d4+2. Drinking it is a <em>bonus action</em>, so it competes with Flurry, Patient Defense and Cloud's Jaunt.</small></span><button class="use" type="button" id="usePotion">unused</button></div>
-
-      <div class="grp">Gear</div>
-      <div class="kv"><span class="kn"><b>Rope, 30 ft</b><small><em>Ordinary rope, not magic.</em> 2 hp, DC 20 Strength check to burst. Tying a creature up imposes <b>Restrained</b> &mdash; speed 0, disadvantage on its attacks and Dex saves, advantage for everyone attacking it. But you <em>cannot bind something still fighting</em>: it has to be Grappled, Incapacitated, unconscious or willing first. A follow-up to your grapple and a prisoner tool, not a combat action. Escape DC is your DM's call.</small></span><span class="tagv">no roll</span></div>
-
-      <div class="grp">Instruments &amp; tools</div>
-      <div class="kv"><span class="kn"><b>Horn</b><small>The promo mic. Needed in hand for Encouraging Song.</small></span></div>
-      <div class="kv"><span class="kn"><small>Also proficient with <b>lyre</b> and <b>lute</b> &mdash; proficiencies, not owned instruments.</small></span></div>
-      <div class="kv"><span class="kn"><b>Brewer's supplies</b><small>Monk tool pick.</small></span></div>
-      <div class="kv"><span class="kn"><b>Disguise kit</b><small>Pro wrestler tool pick.</small></span></div>
-
-      <div class="grp">Gear</div>
-      <div class="kv"><span class="kn"><b>2 costumes</b></span></div>
-      <div class="kv"><span class="kn"><b>Traveler's clothes</b></span></div>
-      <div class="kv"><span class="kn"><b>Mirror</b></span></div>
-      <div class="kv"><span class="kn"><b>Perfume</b></span></div>
-    </div>
-  </div>
-
-  <div class="block">
-    <h2>Adventurers League &middot; tier 1</h2>
-    <div class="cap-row">
-      <div class="cap-box full"><span class="cn">Uncommon +</span><span class="cv">1 / 1</span></div>
-      <div class="cap-box"><span class="cn">Common</span><span class="cv">0 / 5</span></div>
-      <div class="cap-box" id="capCons"><span class="cn">Consumable</span><span class="cv">1 / 5</span></div>
-    </div>
-    <div class="pad" style="padding-top:0;">
-      <div class="kv"><span class="kn"><small>The <b>+1 Club</b> fills your only uncommon-or-better slot until tier 2. Campaign: Forgotten Realms. No faction yet.</small></span></div>
-      <div class="kv"><span class="kn"><small><b>Pro Wrestler</b> is a custom background &mdash; keep your DM's sign-off current. Still unchosen: alignment, two languages, and the level 4 feat or ASI. Both increases are now live: <b>+2 Dex</b> gives AC 16, +6 unarmed, Grapple 14; <b>+2 Wis</b> gives AC 16 and Monk DC 13. <b>+1 Dex / +1 Cha</b> moves nothing &mdash; 17 and 15 are both odd.</small></span></div>
-    </div>
-  </div>
-
-  </div><!-- /tabKit -->
 </div>
 
 <div class="bar">
-  <div class="lab">Turn damage<small id="runs">nothing yet</small></div>
-  <button type="button" id="reset">New turn</button>
-  <span class="n" id="turnTotal">0</span>
+  <div class="bar-top">
+    <div class="lab">Turn damage<small id="runs">nothing yet</small></div>
+    <span class="combat" id="turnStats">
+      <span class="st"><i>last</i><b id="lastTurn">&ndash;</b></span>
+      <span class="st best"><i>best</i><b id="bestTurn">&ndash;</b></span>
+    </span>
+    <span class="n" id="turnTotal">0</span>
+  </div>
+  <div class="bar-btns">
+    <button type="button" class="go" id="commit">Commit turn</button>
+    <button type="button" id="clearRolls">Reset turn</button>
+    <button type="button" id="reset">Discard</button>
+  </div>
 </div>
 
 <script>
@@ -715,10 +782,13 @@
   "use strict";
   var $ = function(id){ return document.getElementById(id); };
 
-  /* =============== character constants =============== */
+  /* =============== CM Monk, goliath monk 3, Warrior of the Open Hand =============== */
   var DEX = 3, WIS = 2, PROF = 2, CLUB = 1;
-  var MONK_DC    = 8 + WIS + PROF;        // 12 - Focus features: Open Hand, Deflect redirect
-  var GRAPPLE_DC = 8 + DEX + PROF;        // 13 - Martial Arts carve-out for Grapple / Shove
+  var MONK_DC    = 8 + WIS  + PROF;   // 12 - Open Hand Push/Topple, Deflect redirect
+  var GRAPPLE_DC = 8 + DEX  + PROF;   // 13 - Martial Arts carve-out for Grapple/Shove
+  var MARTIAL_DIE = 6;                // d6 until level 5
+  var FOCUS_MAX = 3;                  // equal to monk level
+  var DEFL_FLAT = DEX + 3;            // 1d10 + Dex + monk level
 
   var UNSET = "";
   var T_CLUB   = "Action \u2014 +1 Club";
@@ -731,122 +801,76 @@
     [T_CLUB,   "Action \u2014 +1 Club"],
     [T_FIST,   "Action \u2014 Unarmed Strike"],
     [T_BONUS,  "Bonus Action \u2014 Unarmed Strike"],
-    [T_FLURRY, "Flurry of Blows \u2014 1 focus, two strikes"]
+    [T_FLURRY, "Flurry of Blows (2 strikes)"]
   ];
+
+  // paired = spawns a second card; kind drives which modifiers apply
+  var CFG = {};
+  CFG[T_CLUB]   = { paired:false, kind:"club",    focus:0, slot:"action" };
+  CFG[T_FIST]   = { paired:false, kind:"unarmed", focus:0, slot:"action" };
+  CFG[T_BONUS]  = { paired:false, kind:"unarmed", focus:0, slot:"bonus"  };
+  CFG[T_FLURRY] = { paired:true,  kind:"unarmed", focus:1, slot:"bonus"  };
+  function cfg(t){ return CFG[t] || { paired:false, kind:"unarmed", focus:0, slot:"" }; }
+
+  var ATK_MODS = [["Dexterity",DEX],["Proficiency",PROF],["+1 Club",CLUB]];
+  var DMG_MODS = [["Dexterity",DEX],["+1 Club",CLUB]];
 
   var OH = [
-    ["addle","Addle","no opp. attacks"],
-    ["push","Push","STR save \u00b7 15 ft"],
-    ["topple","Topple","DEX save \u00b7 prone"]
+    ["addle","Addle","no save"],
+    ["topple","Topple","Dex save " + MONK_DC],
+    ["push","Push","Str save " + MONK_DC]
   ];
 
-  var LEVEL = 3;
-  var DEFL_FLAT = DEX + LEVEL;            // 1d10 + 6
-  var G = { level:LEVEL, club:true, reaction:false, jaunt:[false,false], meta:[false], potion:false };
+  var G = { club:true, reaction:false };
+  var bankedFocus = 0;
+  var uncannyUsed = false;
+  var jauntUsed = [false,false];
+  var history = [];
+  var sessionDay = null;
+  var lastTurn = null, bestTurn = null;
   var host = $("attacks");
   var cards = [];
 
+  function today(){
+    var d = new Date();
+    return d.getFullYear() + "-" + ("0"+(d.getMonth()+1)).slice(-2) + "-" + ("0"+d.getDate()).slice(-2);
+  }
+  function clockNow(){
+    var d = new Date();
+    return ("0"+d.getHours()).slice(-2) + ":" + ("0"+d.getMinutes()).slice(-2);
+  }
   function el(tag, cls, html){
     var n = document.createElement(tag);
     if(cls) n.className = cls;
     if(html !== undefined) n.innerHTML = html;
     return n;
   }
-  function focusMax(){ return G.level >= 3 ? 3 : 2; }
-
-  /* =============== tabs =============== */
-  Array.prototype.forEach.call($("tabs").children, function(b){
-    b.addEventListener("click", function(){
-      var t = b.dataset.t;
-      Array.prototype.forEach.call($("tabs").children, function(x){
-        var on = x.dataset.t === t;
-        x.className = on ? "on" : "";
-        x.setAttribute("aria-selected", on ? "true" : "false");
-      });
-      $("tabTurn").hidden = (t !== "turn");
-      $("tabKit").hidden  = (t !== "kit");
-      document.querySelector(".bar").style.display = (t === "turn") ? "flex" : "none";
-      if(window.scrollTo) try{ window.scrollTo({ top:0, behavior:"smooth" }); }catch(e){}
-    });
-  });
-
-  /* =============== deflect attacks =============== */
-  function paintDeflect(){
-    var inc  = parseInt($("dIn").value, 10);
-    var roll = parseInt($("dRoll").value, 10);
-    var out = $("dOut"), cap = $("dCap"), sub = $("dSub");
-
-    if(isNaN(inc)){
-      out.textContent = "\u2013"; out.className = "n empty";
-      cap.textContent = "Damage you still take";
-      sub.innerHTML = "Only bludgeoning, piercing, or slashing. Reduces by 1d10+" + DEFL_FLAT + ".";
-      return;
-    }
-    if(isNaN(roll)){
-      out.textContent = "\u2013"; out.className = "n empty";
-      cap.textContent = "Roll your d10";
-      sub.innerHTML = "Prevents <b>" + (1 + DEFL_FLAT) + " to " + (10 + DEFL_FLAT) +
-        "</b>, average " + (5.5 + DEFL_FLAT) + ". Enter the face you rolled.";
-      return;
-    }
-    var prevented = roll + DEFL_FLAT;
-    var through = Math.max(0, inc - prevented);
-    out.textContent = through;
-    out.className = "n" + (through === 0 ? " zero" : "");
-    cap.textContent = through === 0 ? "Fully deflected" : "Damage you still take";
-    sub.innerHTML = through === 0
-      ? "Prevented <b>" + Math.min(inc, prevented) + "</b> of " + inc +
-        ". You may spend <b>1 focus point</b> to throw it back. No attack roll: one creature makes a " +
-        "<b>Dex save vs DC " + MONK_DC + "</b> or takes <b>2d6+" + DEX + "</b>, nothing on a success. " +
-        "Within <b>5 ft</b> if the hit was melee, <b>60 ft</b> if it was ranged."
-      : "Prevented <b>" + prevented + "</b> of " + inc +
-        ". Not enough to redirect \u2014 that needs it down to 0.";
+  function esc(t){
+    return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
   }
-  ["dIn","dRoll"].forEach(function(id){
-    $(id).addEventListener("input", paintDeflect);
-  });
 
-  /* =============== purse and potion =============== */
-  $("gold").addEventListener("input", function(){
-    if(this.value !== "" && parseInt(this.value,10) < 0) this.value = 0;
-  });
-  $("usePotion").addEventListener("click", function(){
-    G.potion = !G.potion;
-    this.textContent = G.potion ? "used" : "unused";
-    this.className = "use" + (G.potion ? " on" : "");
-    $("itPotion").className = "kv" + (G.potion ? " spent" : "");
-    var box = $("capCons");
-    box.querySelector(".cv").textContent = (G.potion ? 0 : 1) + " / 5";
-  });
-
-  function buildPips(){
+  /* =============== focus pips =============== */
+  (function(){
     var box = $("pips");
-    box.innerHTML = "";
-    for(var i = 0; i < focusMax(); i++){
-      box.appendChild(el("span","pip"));
-    }
-  }
+    for(var i=0;i<FOCUS_MAX;i++) box.appendChild(el("span","pip"));
+  })();
 
-  /* =============== charge trackers =============== */
-  function buildCharges(id, key, n){
-    var box = $(id);
-    box.innerHTML = "";
-    for(var i = 0; i < n; i++){
+  /* =============== Cloud's Jaunt charges =============== */
+  (function(){
+    var box = $("jaunt");
+    for(var i=0;i<2;i++){
       (function(idx){
-        var b = el("button","charge");
-        b.type = "button";
-        b.setAttribute("aria-label","Use " + (key === "jaunt" ? "Cloud's Jaunt" : "Uncanny Metabolism"));
+        var b = el("button",""); b.type="button";
+        b.setAttribute("aria-label","Use Cloud's Jaunt");
         b.addEventListener("click", function(){
-          G[key][idx] = !G[key][idx];
-          b.className = "charge" + (G[key][idx] ? " spent" : "");
-          b.setAttribute("aria-pressed", G[key][idx] ? "true" : "false");
+          jauntUsed[idx] = !jauntUsed[idx];
+          b.className = jauntUsed[idx] ? "spent" : "";
+          b.setAttribute("aria-pressed", jauntUsed[idx] ? "true":"false");
         });
         box.appendChild(b);
       })(i);
     }
-  }
-  buildCharges("jauntCharges","jaunt",2);
-  buildCharges("metaCharges","meta",1);
+  })();
 
   /* =============== club switch =============== */
   $("swClub").addEventListener("click", function(){
@@ -864,17 +888,29 @@
     if(e.key === "Enter" || e.key === " "){ e.preventDefault(); toggleReaction(); }
   });
 
+  function pendingFocus(){
+    var groups = [];
+    cards.forEach(function(c){
+      if(c.getType() === T_FLURRY && groups.indexOf(c.groupId) === -1) groups.push(c.groupId);
+    });
+    return groups.length;
+  }
+
   function paintEconomy(){
-    var action = 0, bonusSingles = 0, groups = [], unset = 0;
+    var action = 0, bonusSingles = 0, flurryGroups = [], unset = 0;
+    var grapples = 0, ohCount = 0;
     cards.forEach(function(c){
       var t = c.getType();
+      if(c.isGrapple()) grapples++;
+      if(c.getOH()) ohCount++;
       if(!t){ unset++; return; }
-      if(t === T_CLUB || t === T_FIST) action++;
+      var k = cfg(t);
+      if(k.slot === "action") action++;
       else if(t === T_FLURRY){
-        if(groups.indexOf(c.groupId) === -1) groups.push(c.groupId);
+        if(flurryGroups.indexOf(c.groupId) === -1) flurryGroups.push(c.groupId);
       } else bonusSingles++;
     });
-    var bonus = bonusSingles + groups.length;
+    var bonus = bonusSingles + flurryGroups.length;
 
     var counts = { action:action, bonus:bonus, reaction:G.reaction ? 1 : 0 };
     document.querySelectorAll(".slot").forEach(function(s){
@@ -884,41 +920,99 @@
       s.querySelector(".box").textContent = n > 1 ? n : "\u2713";
     });
 
-    var lines = [];
-    if(action > 1) lines.push('<span class="warn"><b>' + action + " actions</b> \u2014 you only get one</span>");
-    if(bonus > 1) lines.push('<span class="warn"><b>' + bonus + " bonus actions</b> \u2014 you only get one</span>");
-    if(bonusSingles && groups.length)
-      lines.push("The free Martial Arts strike and Flurry are <b>the same bonus action</b>. Flurry replaces it, it doesn't stack.");
-    if(groups.length)
-      lines.push("Flurry of Blows: <b>two strikes</b>, one bonus action, one focus point.");
-    if(!lines.length){
+    var warn = [], lines = [];
+    if(action > 1) warn.push("<b>" + action + " actions</b> \u2014 you only get one");
+    if(bonus > 1) warn.push("<b>" + bonus + " bonus actions</b> \u2014 you only get one");
+    if(warn.length) lines.push(warn.join(" \u00b7 "));
+    if(bonusSingles && flurryGroups.length)
+      lines.push("The free Martial Arts strike and Flurry are <b>the same bonus action</b>.");
+    if(flurryGroups.length)
+      lines.push("Flurry: <b>two strikes</b>, one bonus action, one focus point.");
+    if(grapples)
+      lines.push("A Grapple replaces that strike's damage \u2014 <b>no Open Hand rider</b>.");
+    if(!warn.length && !lines.length){
       lines.push(unset
         ? "Pick a strike type on each card and these tick themselves."
         : "Reaction: Deflect Attacks (1d10+" + DEFL_FLAT + ") or an opportunity attack. Not both.");
     }
     if(action === 1 && !bonus && !unset)
-      lines.push("Bonus action still open \u2014 Flurry, Patient Defense, Step of the Wind, or Cloud's Jaunt.");
+      lines.push("Bonus action still open \u2014 Flurry, Patient Defense, Step of the Wind, Cloud's Jaunt.");
     $("econNote").innerHTML = lines.join("<br>");
 
-    var MAX = focusMax();
-    var left = MAX - groups.length;
-    document.querySelectorAll(".pip").forEach(function(p, i){
-      p.className = "pip" + (i < Math.max(0, left) ? "" : " out");
+    var pending = pendingFocus();
+    var left = FOCUS_MAX - (bankedFocus + pending);
+    document.querySelectorAll(".pip").forEach(function(p,i){
+      p.className = "pip" + (i < Math.max(0,left) ? "" : " out");
     });
     var row = $("focusRow");
     row.className = "focus" + (left < 0 ? " over" : left === 0 ? " drained" : "");
     $("focusCount").textContent = left < 0
       ? Math.abs(left) + " over \u2014 you don't have it"
-      : left + " of " + MAX + " left";
+      : left + " of " + FOCUS_MAX + " left";
+    $("fpNote").innerHTML = "banked " + bankedFocus + " &middot; this turn " + pending;
+
+    var uu = $("uncannyUse");
+    uu.disabled = uncannyUsed;
+    uu.className = uncannyUsed ? "" : "armed";
+    uu.textContent = uncannyUsed ? "Spent" : "Use";
   }
 
   function paintNow(){
-    $("whoLvl").innerHTML = "Monk " + LEVEL + " \u00b7 Open Hand";
     $("nowClub").innerHTML = G.club
-      ? "<em>+" + (DEX + PROF + CLUB) + "</em> \u00b7 1d6+" + (DEX + CLUB)
+      ? "<em>+" + (DEX+PROF+CLUB) + "</em> \u00b7 1d6+" + (DEX+CLUB)
       : "sheathed";
-    $("nowFist").innerHTML = "+" + (DEX + PROF) + " \u00b7 1d6+" + DEX;
+    $("nowFist").innerHTML = "+" + (DEX+PROF) + " \u00b7 1d6+" + DEX;
   }
+
+  $("fpMinus").addEventListener("click", function(){
+    if(bankedFocus > 0) bankedFocus--; refreshAll();
+  });
+  $("fpPlus").addEventListener("click", function(){ bankedFocus++; refreshAll(); });
+  $("shortRest").addEventListener("click", function(){ bankedFocus = 0; refreshAll(); });
+  $("longRest").addEventListener("click", function(){
+    bankedFocus = 0; uncannyUsed = false;
+    jauntUsed = [false,false];
+    Array.prototype.forEach.call($("jaunt").children, function(b){
+      b.className = ""; b.setAttribute("aria-pressed","false");
+    });
+    lastTurn = null; bestTurn = null;
+    refreshAll();
+  });
+  $("uncannyUse").addEventListener("click", function(){
+    if(uncannyUsed) return;
+    bankedFocus = 0; uncannyUsed = true; refreshAll();
+  });
+
+  /* =============== deflect attacks =============== */
+  function paintDeflect(){
+    var inc = parseInt($("dIn").value,10), roll = parseInt($("dRoll").value,10);
+    var out = $("dOut"), cap = $("dCap"), sub = $("dSub");
+    if(isNaN(inc)){
+      out.textContent = "\u2013"; out.className = "n empty";
+      cap.textContent = "Damage you still take";
+      sub.innerHTML = "Only bludgeoning, piercing, or slashing. Reduces by 1d10+" + DEFL_FLAT + ".";
+      return;
+    }
+    if(isNaN(roll)){
+      out.textContent = "\u2013"; out.className = "n empty";
+      cap.textContent = "Roll your d10";
+      sub.innerHTML = "Prevents <b>" + (1+DEFL_FLAT) + " to " + (10+DEFL_FLAT) +
+        "</b>, average " + (5.5+DEFL_FLAT) + ". Enter the face you rolled.";
+      return;
+    }
+    var prevented = roll + DEFL_FLAT;
+    var through = Math.max(0, inc - prevented);
+    out.textContent = through;
+    out.className = "n" + (through === 0 ? " zero" : "");
+    cap.textContent = through === 0 ? "Fully deflected" : "Damage you still take";
+    sub.innerHTML = through === 0
+      ? "Prevented <b>" + Math.min(inc,prevented) + "</b> of " + inc +
+        ". Spend <b>1 focus</b> to throw it back \u2014 <b>no attack roll</b>: one creature makes a " +
+        "<b>Dex save vs " + MONK_DC + "</b> or takes <b>2d6+" + DEX + "</b>, nothing on a success. " +
+        "Within 5 ft if the hit was melee, 60 ft if it was ranged."
+      : "Prevented <b>" + prevented + "</b> of " + inc + ". Not enough to redirect \u2014 that needs it down to 0.";
+  }
+  ["dIn","dRoll"].forEach(function(id){ $(id).addEventListener("input", paintDeflect); });
 
   /* =============== modifier rows =============== */
   function modRow(name, value, on, editable, onChange){
@@ -933,11 +1027,6 @@
     val.addEventListener("input", onChange);
     val.addEventListener("click", function(e){ e.preventDefault(); e.stopPropagation(); });
     if(editable) nm.addEventListener("click", function(e){ e.preventDefault(); });
-    row.setChecked = function(v){ cb.checked = v; };
-    row.setDisabled = function(v){
-      cb.disabled = v; val.disabled = v;
-      row.className = "row" + (v ? " muted" : "");
-    };
     return row;
   }
   function sumMods(box){
@@ -957,7 +1046,7 @@
 
   /* =============== attack card =============== */
   function makeCard(after){
-    var state = { face:null, mode:"damage", oh:null };
+    var state = { face:null, grapple:false, oh:null };
 
     var card = el("div","block");
 
@@ -982,26 +1071,21 @@
     });
     top.appendChild(sel);
 
-    /* what this strike does */
-    var seg = el("div","seg");
-    [["damage","Damage"],["grapple","Grapple"],["shove","Shove"]].forEach(function(m){
-      var b = el("button", m[0] === "damage" ? "on" : "", m[1]);
-      b.type = "button"; b.dataset.m = m[0];
-      b.addEventListener("click", function(){
-        if(seg.classList.contains("locked")) return;
-        state.mode = m[0];
-        Array.prototype.forEach.call(seg.children, function(x){
-          x.className = x.dataset.m === state.mode ? "on" : "";
-        });
-        refreshAll();
-      });
-      seg.appendChild(b);
+    // grapple toggle, per strike
+    var grab = el("label","grab");
+    var grabCb = el("input"); grabCb.type = "checkbox";
+    var grabL = el("span","gl","Use this strike to Grapple");
+    grab.appendChild(grabCb); grab.appendChild(grabL);
+    grabCb.addEventListener("change", function(){
+      state.grapple = grabCb.checked;
+      if(state.grapple) state.oh = null;
+      refreshAll();
     });
-    top.appendChild(seg);
+    top.appendChild(grab);
 
     var pairNote = el("div");
     pairNote.style.cssText = "font-family:'IBM Plex Mono',monospace;font-size:9.5px;" +
-      "letter-spacing:.06em;color:var(--dim);margin-top:6px;line-height:1.5;";
+      "letter-spacing:.06em;color:var(--dim);margin-top:7px;line-height:1.5;";
     top.appendChild(pairNote);
     card.appendChild(top);
 
@@ -1016,13 +1100,38 @@
     readout.appendChild(math);
     pad.appendChild(readout);
 
+    /* target AC */
+    var acRow = el("div","card-ac");
+    var acShow = el("span","ac-val","\u2013");
+    var acVerdict = el("span","verdict");
+    acRow.appendChild(el("span","k","Target AC"));
+    acRow.appendChild(acShow); acRow.appendChild(acVerdict);
+    pad.appendChild(acRow);
+
+    var acWrap = el("div","wheel-wrap ac");
+    var acWheel = el("div","wheel");
+    acWheel.setAttribute("role","listbox");
+    acWheel.setAttribute("aria-label","Target armor class");
+    for(var av = 5; av <= 30; av++){
+      var at = el("button","tick", String(av));
+      at.type="button"; at.dataset.v = av; at.setAttribute("role","option");
+      acWheel.appendChild(at);
+    }
+    acWrap.appendChild(acWheel);
+    var acFrame = el("div","wheel-frame");
+    acWrap.appendChild(acFrame);
+    acWrap.appendChild(el("div","fade l"));
+    acWrap.appendChild(el("div","fade r"));
+    pad.appendChild(acWrap);
+
+    /* d20 */
     var ww = el("div","wheel-wrap");
     var wheel = el("div","wheel");
     wheel.setAttribute("role","listbox");
     wheel.setAttribute("aria-label","d20 face");
     for(var i = 1; i <= 20; i++){
       var t = el("button","tick", String(i));
-      t.type = "button"; t.dataset.v = i; t.setAttribute("role","option");
+      t.type="button"; t.dataset.v = i; t.setAttribute("role","option");
       wheel.appendChild(t);
     }
     ww.appendChild(wheel);
@@ -1036,6 +1145,10 @@
     var attackNote = el("div");
     pad.appendChild(attackNote);
 
+    /* the grapple line you read to the DM */
+    var grabDM = el("div");
+    pad.appendChild(grabDM);
+
     /* Open Hand picker */
     var ohWrap = el("div","oh");
     ohWrap.hidden = true;
@@ -1043,7 +1156,7 @@
     var ohB = el("div","oh-b");
     OH.forEach(function(o){
       var b = el("button","", o[1] + "<small>" + o[2] + "</small>");
-      b.type = "button"; b.dataset.o = o[0];
+      b.type="button"; b.dataset.o = o[0];
       b.addEventListener("click", function(){
         state.oh = (state.oh === o[0]) ? null : o[0];
         Array.prototype.forEach.call(ohB.children, function(x){
@@ -1055,82 +1168,97 @@
     });
     ohWrap.appendChild(ohB);
     pad.appendChild(ohWrap);
-    var ohNote = el("div");
-    pad.appendChild(ohNote);
+    var ohDM = el("div");
+    pad.appendChild(ohDM);
 
+    /* attack modifiers */
     var atkSect = el("div","sect","Attack modifiers");
     pad.appendChild(atkSect);
     var atkBox = el("div");
-    var rDex  = modRow("Dexterity", DEX, true, false, refreshAll);
-    var rProf = modRow("Proficiency", PROF, true, false, refreshAll);
-    var rClubA= modRow("+1 Club", CLUB, true, false, refreshAll);
-    atkBox.appendChild(rDex); atkBox.appendChild(rProf); atkBox.appendChild(rClubA);
+    ATK_MODS.forEach(function(m){ atkBox.appendChild(modRow(m[0],m[1],true,false,refreshAll)); });
     pad.appendChild(atkBox);
     var addAtkMod = el("button","add","+ add modifier");
-    addAtkMod.type = "button";
+    addAtkMod.type="button";
     addAtkMod.addEventListener("click", function(){
       var r = modRow("Situational",0,true,true,refreshAll);
       atkBox.appendChild(r); r.querySelector(".name").focus(); refreshAll();
     });
     pad.appendChild(addAtkMod);
 
-    var diceSect = el("div","sect","Damage dice<span class=\"x2\"> \u00b7 rolled twice</span>");
+    /* damage dice as tappable faces */
+    var diceSect = el("div","sect","Damage dice<span class=\"x2\"> \u00b7 rolled twice on a crit</span>");
     pad.appendChild(diceSect);
     var diceBox = el("div");
     pad.appendChild(diceBox);
 
     var dieRows = [];
-    function dieRow(label, sub, removable){
-      var row = el("div","row");
-      var nm = el("span","name","<b>" + label + "</b>" + (sub ? "<small>" + sub + "</small>" : ""));
-      var pair = el("span","pair");
-
-      var inp = el("input"); inp.type = "number"; inp.min = "1";
-      inp.className = "die"; inp.placeholder = "\u2013"; inp.inputMode = "numeric";
-      inp.setAttribute("aria-label", label);
-      inp.addEventListener("input", refreshAll);
-
-      var plus = el("span","x","+");
-      var crit = el("input"); crit.type = "number"; crit.min = "1";
-      crit.className = "die crit"; crit.placeholder = "crit"; crit.inputMode = "numeric";
-      crit.setAttribute("aria-label", label + " \u2014 critical die");
-      crit.addEventListener("input", refreshAll);
-
-      pair.appendChild(inp); pair.appendChild(plus); pair.appendChild(crit);
-      row.appendChild(nm); row.appendChild(pair);
-
-      var entry = { row:row, main:inp, crit:crit };
-      dieRows.push(entry);
-
+    function dieRow(label, sub, removable, size){
+      var faces = size || MARTIAL_DIE;
+      var row = el("div","die-row");
+      var head = el("div","die-head");
+      head.innerHTML = '<span class="name"><b>' + label + '</b>' +
+                       (sub ? '<small>' + sub + '</small>' : '') + '</span>';
+      row.appendChild(head);
+      var entry = { row:row, faces:faces, main:null, crit:null };
       if(removable){
-        var x = el("button","drop","\u00d7"); x.type = "button";
+        var x = el("button","drop","\u00d7"); x.type="button";
         x.setAttribute("aria-label","Remove this damage roll");
         x.addEventListener("click", function(){
           dieRows = dieRows.filter(function(e){ return e !== entry; });
           row.remove(); refreshAll();
         });
-        row.appendChild(x);
+        head.appendChild(x);
       }
+      function strip(isCrit){
+        var s = el("div","die-strip" + (isCrit ? " crit" : ""));
+        var store = { value:null, node:s, buttons:[] };
+        if(isCrit) s.appendChild(el("span","striptag","crit"));
+        for(var i = 1; i <= faces; i++){
+          (function(v){
+            var b = el("button","face", String(v));
+            b.type="button";
+            b.setAttribute("aria-label", label + " " + (isCrit ? "critical " : "") + "rolled " + v);
+            b.addEventListener("click", function(){
+              store.value = (store.value === v) ? null : v;
+              refreshAll();
+            });
+            store.buttons.push(b); s.appendChild(b);
+          })(i);
+        }
+        store.paint = function(disabled){
+          store.buttons.forEach(function(b, ix){
+            var v = ix + 1;
+            b.className = "face" + (store.value === v ? " on" : "") +
+              (v === 1 ? " one" : "") + (v === faces ? " max" : "");
+            b.disabled = !!disabled;
+          });
+          s.style.display = "";
+        };
+        return store;
+      }
+      entry.main = strip(false);
+      entry.crit = strip(true);
+      row.appendChild(entry.main.node);
+      row.appendChild(entry.crit.node);
+      dieRows.push(entry);
       return row;
     }
-    diceBox.appendChild(dieRow("Martial Arts die","d6 \u00b7 replaces the club's d4", false));
+    diceBox.appendChild(dieRow("Martial Arts die","d6 \u00b7 replaces the club's d4", false, MARTIAL_DIE));
 
     var addDie = el("button","add","+ Add another roll");
-    addDie.type = "button";
+    addDie.type="button";
     addDie.addEventListener("click", function(){
-      diceBox.appendChild(dieRow("Extra die","", true)); refreshAll();
+      diceBox.appendChild(dieRow("Extra die","d6", true, MARTIAL_DIE)); refreshAll();
     });
     pad.appendChild(addDie);
 
     var dmgSect = el("div","sect","Damage modifiers");
     pad.appendChild(dmgSect);
     var dmgBox = el("div");
-    var rDexD  = modRow("Dexterity", DEX, true, false, refreshAll);
-    var rClubD = modRow("+1 Club", CLUB, true, false, refreshAll);
-    dmgBox.appendChild(rDexD); dmgBox.appendChild(rClubD);
+    DMG_MODS.forEach(function(m){ dmgBox.appendChild(modRow(m[0],m[1],true,false,refreshAll)); });
     pad.appendChild(dmgBox);
     var addDmgMod = el("button","add","+ add modifier");
-    addDmgMod.type = "button";
+    addDmgMod.type="button";
     addDmgMod.addEventListener("click", function(){
       var r = modRow("Situational",0,true,true,refreshAll);
       dmgBox.appendChild(r); r.querySelector(".name").focus(); refreshAll();
@@ -1143,27 +1271,78 @@
     dmgBar.appendChild(dmgLab); dmgBar.appendChild(dmgN);
     pad.appendChild(dmgBar);
 
-    /* ---- carousel ---- */
+    /* ---- AC wheel ---- */
+    var acVal = null, acLock = false, acTimer = null, AW = 44;
+    function acPad(){
+      var w = acWheel.clientWidth; if(!w) return;
+      var side = Math.max(0,(w - AW)/2);
+      acWheel.style.paddingLeft = side + "px"; acWheel.style.paddingRight = side + "px";
+      acCenter(acVal === null ? 15 : acVal, "auto");
+    }
+    function acCenter(v, behavior){
+      var t = acWheel.querySelector('.tick[data-v="'+v+'"]'); if(!t) return;
+      acLock = true;
+      var left = t.offsetLeft - acWheel.clientWidth/2 + AW/2;
+      if(acWheel.scrollTo) acWheel.scrollTo({left:left, behavior:behavior||"smooth"});
+      else acWheel.scrollLeft = left;
+      setTimeout(function(){ acLock = false; }, 260);
+    }
+    function acNearest(){
+      var mid = acWheel.scrollLeft + acWheel.clientWidth/2, best=null, bd=Infinity;
+      Array.prototype.forEach.call(acWheel.children, function(t){
+        var dd = Math.abs(t.offsetLeft + AW/2 - mid);
+        if(dd < bd){ bd = dd; best = t; }
+      });
+      return best;
+    }
+    function acPaint(){
+      Array.prototype.forEach.call(acWheel.children, function(t){
+        var v = parseInt(t.dataset.v,10);
+        t.className = "tick" + (v === acVal ? " sel" : "") +
+          (acVal !== null && Math.abs(v-acVal) === 1 ? " near" : "");
+        t.setAttribute("aria-selected", v === acVal ? "true":"false");
+      });
+      acFrame.className = "wheel-frame" + (acVal === null ? "" : " live");
+      acShow.textContent = (acVal === null) ? "\u2013" : acVal;
+    }
+    function acPick(v){
+      acVal = v; acPaint();
+      cards.forEach(function(o){ if(o !== card) o.setAC(v); });
+      refreshAll();
+    }
+    acWheel.addEventListener("scroll", function(){
+      if(acLock) return;
+      clearTimeout(acTimer);
+      acTimer = setTimeout(function(){
+        var t = acNearest(); if(!t) return;
+        var v = parseInt(t.dataset.v,10);
+        if(v !== acVal) acPick(v);
+      }, 90);
+    }, {passive:true});
+    acWheel.addEventListener("click", function(e){
+      var t = e.target.closest(".tick"); if(!t) return;
+      var v = parseInt(t.dataset.v,10);
+      acCenter(v); acPick(v);
+    });
+
+    /* ---- d20 wheel ---- */
     var lockScroll = false, scrollTimer;
     function padWheel(){
-      var w = wheel.clientWidth;
-      if(!w) return;
-      var side = Math.max(0, (w - 52) / 2);
-      wheel.style.paddingLeft = side + "px";
-      wheel.style.paddingRight = side + "px";
+      var w = wheel.clientWidth; if(!w) return;
+      var side = Math.max(0,(w-52)/2);
+      wheel.style.paddingLeft = side+"px"; wheel.style.paddingRight = side+"px";
       centerOn(state.face || 10, "auto");
     }
     function centerOn(v, behavior){
-      var t = wheel.querySelector('.tick[data-v="' + v + '"]');
-      if(!t) return;
+      var t = wheel.querySelector('.tick[data-v="'+v+'"]'); if(!t) return;
       lockScroll = true;
-      var left = t.offsetLeft - wheel.clientWidth / 2 + 26;
-      if(wheel.scrollTo) wheel.scrollTo({ left:left, behavior:behavior || "smooth" });
+      var left = t.offsetLeft - wheel.clientWidth/2 + 26;
+      if(wheel.scrollTo) wheel.scrollTo({left:left, behavior:behavior||"smooth"});
       else wheel.scrollLeft = left;
       setTimeout(function(){ lockScroll = false; }, 260);
     }
     function nearestTick(){
-      var mid = wheel.scrollLeft + wheel.clientWidth / 2, best = null, bd = Infinity;
+      var mid = wheel.scrollLeft + wheel.clientWidth/2, best=null, bd=Infinity;
       Array.prototype.forEach.call(wheel.children, function(t){
         var dd = Math.abs(t.offsetLeft + 26 - mid);
         if(dd < bd){ bd = dd; best = t; }
@@ -1173,11 +1352,10 @@
     function paintTicks(){
       var s = state.face;
       Array.prototype.forEach.call(wheel.children, function(t){
-        var v = parseInt(t.dataset.v, 10);
-        t.className = "tick" +
-          (v === s ? " sel" + ((v === 1 || v === 20) ? " hot" : "") : "") +
-          (s && Math.abs(v - s) === 1 ? " near" : "");
-        t.setAttribute("aria-selected", v === s ? "true" : "false");
+        var v = parseInt(t.dataset.v,10);
+        t.className = "tick" + (v === s ? " sel" + ((v===1||v===20) ? " hot":"") : "") +
+          (s && Math.abs(v-s) === 1 ? " near" : "");
+        t.setAttribute("aria-selected", v === s ? "true":"false");
       });
       frame.className = "wheel-frame" + (s ? " live" : "");
     }
@@ -1185,155 +1363,220 @@
       if(lockScroll) return;
       clearTimeout(scrollTimer);
       scrollTimer = setTimeout(function(){
-        var t = nearestTick();
-        if(!t) return;
-        var v = parseInt(t.dataset.v, 10);
+        var t = nearestTick(); if(!t) return;
+        var v = parseInt(t.dataset.v,10);
         if(v !== state.face){ state.face = v; paintTicks(); refreshAll(); }
       }, 90);
-    }, { passive:true });
+    }, {passive:true});
     wheel.addEventListener("click", function(e){
-      var t = e.target.closest(".tick");
-      if(!t) return;
-      state.face = parseInt(t.dataset.v, 10);
+      var t = e.target.closest(".tick"); if(!t) return;
+      state.face = parseInt(t.dataset.v,10);
       centerOn(state.face); paintTicks(); refreshAll();
     });
 
-    /* ---- per-card recalc ---- */
+    /* ---- recalc ---- */
     card.recalc = function(){
       var f = state.face;
       var isCrit = (f === 20);
       var type = sel.value;
-      var isClubStrike = (type === T_CLUB);
+      var k = cfg(type).kind;
+      var isClub = (k === "club");
+      var clubLive = isClub && G.club;
       var isFlurry = (type === T_FLURRY);
-      var clubLive = isClubStrike && G.club;
 
       card.classList.toggle("is-crit", isCrit);
 
-      /* the club bonus only exists on a club strike */
-      [rClubA, rClubD].forEach(function(r){
-        if(r._live !== clubLive){ r._live = clubLive; r.setChecked(clubLive); }
-        r.setDisabled(!clubLive);
+      // a club swing is a weapon attack: it cannot Grapple
+      grab.className = "grab" + (isClub ? " hide" : "") + (state.grapple ? " on" : "");
+      if(isClub && state.grapple){
+        state.grapple = false; grabCb.checked = false;
+        grab.className = "grab hide";
+      }
+      var grabbing = state.grapple;
+
+      // the +1 only exists on a club strike
+      [atkBox, dmgBox].forEach(function(box){
+        Array.prototype.forEach.call(box.children, function(row){
+          var nm = row.querySelector(".name"); if(!nm) return;
+          if(nm.textContent.indexOf("Club") === -1) return;
+          var off = !clubLive;
+          row.className = "row" + (off ? " muted" : "");
+          var cb = row.querySelector("input[type=checkbox]");
+          if(cb){ cb.disabled = off; if(row._live !== clubLive){ row._live = clubLive; cb.checked = clubLive; } }
+        });
       });
 
-      /* club is a weapon attack: no grapple or shove off it */
-      var noGrab = isClubStrike;
-      seg.className = "seg" + (noGrab ? " locked" : "");
-      if(noGrab && state.mode !== "damage"){
-        state.mode = "damage";
-        Array.prototype.forEach.call(seg.children, function(x){
-          x.className = x.dataset.m === "damage" ? "on" : "";
-        });
-      }
-      var grabbing = (state.mode !== "damage");
-
-      /* Open Hand only rides Flurry hits, and only from level 3 */
-      var ohLive = isFlurry && G.level >= 3 && !grabbing;
+      // Open Hand rides Flurry hits only
+      var ohLive = isFlurry && !grabbing;
       ohWrap.hidden = !ohLive;
       if(!ohLive && state.oh){
         state.oh = null;
         Array.prototype.forEach.call(ohB.children, function(x){ x.className = ""; });
       }
-      ohNote.innerHTML = (state.oh === "push" || state.oh === "topple")
-        ? '<div class="note"><span class="tag">Save</span><span>' +
-          (state.oh === "push" ? "Strength" : "Dexterity") +
-          ' save against <b>DC ' + MONK_DC + '</b> (8 + Wis + prof). On a failure: ' +
-          (state.oh === "push" ? "pushed up to <b>15 ft</b> away." : "knocked <b>Prone</b>.") +
-          (state.oh === "topple"
-            ? " Prone gives you advantage in melee but <b>disadvantage to every ally shooting at it</b>."
-            : "") +
-          '</span></div>'
-        : state.oh === "addle"
-        ? '<div class="note"><span class="tag">Addle</span><span>No save. It can\u2019t make ' +
-          '<b>opportunity attacks</b> until the start of its next turn. Free exit for anyone it\u2019s on.</span></div>'
-        : "";
 
-      /* grapple and shove replace damage entirely */
+      // grapple replaces the strike's damage entirely
       diceSect.hidden = grabbing; diceBox.hidden = grabbing; addDie.hidden = grabbing;
       dmgSect.hidden = grabbing; dmgBox.hidden = grabbing; addDmgMod.hidden = grabbing;
       dmgBar.hidden = grabbing;
 
       dieRows.forEach(function(e){
-        e.crit.disabled = !isCrit;
-        if(!isCrit && e.crit.value !== "") e.crit.value = "";
+        e.main.paint(false);
+        e.crit.paint(!isCrit);
+        e.crit.node.style.display = isCrit ? "" : "none";
+        if(!isCrit) e.crit.value = null;
       });
 
       var am = sumMods(atkBox);
+      var ac = acVal;
+      var atkTotal = (f === null) ? null : f + am.total;
+      var didHit = false;
+
       if(f === null){
         bigN.textContent = "\u2013"; bigN.className = "n empty";
         math.innerHTML = am.parts.length ? "ready: " + am.parts.join(" \u00b7 ")
                                          : "Pick the d20 face you rolled";
         readout.className = "readout";
+        acVerdict.className = "verdict"; acVerdict.textContent = "";
         attackNote.innerHTML = "";
       } else {
-        bigN.textContent = f + am.total; bigN.className = "n";
+        bigN.textContent = atkTotal; bigN.className = "n";
         math.innerHTML = "<b>" + f + "</b> rolled" +
           (am.parts.length ? " \u00b7 " + am.parts.join(" \u00b7 ") : "");
         readout.className = "readout" + (f === 20 ? " crit" : f === 1 ? " fumble" : "");
+        if(f === 20){ acVerdict.className="verdict crit"; acVerdict.textContent="critical"; didHit = true; }
+        else if(f === 1){ acVerdict.className="verdict miss"; acVerdict.textContent="miss"; }
+        else if(ac !== null){
+          didHit = atkTotal >= ac;
+          acVerdict.className = "verdict " + (didHit ? "hit":"miss");
+          acVerdict.textContent = didHit ? "hit" : "miss";
+        } else { acVerdict.className="verdict"; acVerdict.textContent=""; }
+
         attackNote.innerHTML =
-          f === 1 ? '<div class="note soft"><span class="tag">Miss</span><span>Natural 1 always ' +
-                    'misses. No reroll \u2014 you have <b>no Luck and no Tavern Brawler</b>.</span></div>'
+          f === 1 ? '<div class="note soft"><span class="tag">Miss</span><span>Natural 1 always misses. ' +
+                    'No reroll \u2014 <b>no Luck, no Tavern Brawler</b> on this build.</span></div>'
         : f === 20 ? '<div class="note"><span class="tag">Crit</span><span>Natural 20. ' +
-                    '<b>Crit boxes are open below</b> \u2014 roll every damage die a second ' +
-                    'time and enter it. Flat modifiers are not doubled.</span></div>'
+                    '<b>The crit row is open below</b> \u2014 roll the die again and tap the face. ' +
+                    'Flat modifiers are not doubled.</span></div>'
         : "";
       }
 
-      if(grabbing){
-        dmgLab.innerHTML = "";
-        return;
+      /* the line to read out loud */
+      grabDM.innerHTML = grabbing
+        ? '<div class="dm"><div class="dt">Read this to the DM</div>' +
+          '<div class="dl">Grapple \u2014 it makes a <em>Strength or Dexterity saving throw, ' +
+          'its choice, against DC ' + GRAPPLE_DC + '</em>.</div>' +
+          '<div class="df">8 + ' + DEX + ' Dex + ' + PROF + ' prof = ' + GRAPPLE_DC +
+          ' &middot; Martial Arts lets a Grapple use Dex instead of Str.<br>' +
+          'On a failure: Grappled \u2014 speed 0, and disadvantage on its attacks against anyone but me. ' +
+          'Escaping costs it an action. Max one size larger than me; needs a free hand.</div></div>'
+        : "";
+
+      var dmLine = "";
+      if(state.oh === "addle"){
+        dmLine = '<div class="dm pink"><div class="dt">Read this to the DM</div>' +
+          '<div class="dl">Addle \u2014 <em>no saving throw</em>.</div>' +
+          '<div class="df">It can\u2019t make opportunity attacks until the start of its next turn. ' +
+          'Free exit for anyone it is standing next to.</div></div>';
+      } else if(state.oh === "topple" || state.oh === "push"){
+        var abil = (state.oh === "topple") ? "Dexterity" : "Strength";
+        var eff  = (state.oh === "topple")
+          ? "On a failure: knocked <b>Prone</b>. Prone gives me advantage in melee but "
+            + "<b>disadvantage to every ally shooting at it</b>."
+          : "On a failure: pushed up to <b>15 ft</b> away. Costs my ranged allies nothing.";
+        dmLine = '<div class="dm pink"><div class="dt">Read this to the DM</div>' +
+          '<div class="dl">' + (state.oh === "topple" ? "Topple" : "Push") +
+          ' \u2014 it makes a <em>' + abil + ' saving throw against DC ' + MONK_DC + '</em>.</div>' +
+          '<div class="df">8 + ' + WIS + ' Wis + ' + PROF + ' prof = ' + MONK_DC +
+          ' &middot; this is the Monk DC, <b>not</b> the Grapple DC of ' + GRAPPLE_DC + '.<br>' + eff + '</div></div>';
+      }
+      if(dmLine && f !== null && !didHit && f !== null){
+        dmLine = dmLine.replace('<div class="dt">Read this to the DM</div>',
+          '<div class="dt">Only on a hit \u2014 this one missed</div>');
+      }
+      ohDM.innerHTML = dmLine;
+
+      pairNote.innerHTML =
+        (isClub && !G.club) ? "Club is sheathed \u2014 flip it on above, or this is a bare fist."
+        : (type === T_BONUS) ? "Free every turn. No focus point."
+        : (type === T_FIST && G.club) ? "The club is the better action strike while it is in hand."
+        : (isFlurry) ? "Open Hand rides each Flurry hit. Grapple instead and you lose that rider."
+        : "";
+      if(sel.disabled) pairNote.innerHTML = "second strike of the Flurry \u2014 set on the first card";
+
+      /* damage */
+      var dm = grabbing ? {total:0,parts:[]} : sumMods(dmgBox);
+      var any = false, sum = 0, faces = [], critFaces = [];
+      if(!grabbing){
+        dieRows.forEach(function(e){
+          [[e.main,false],[e.crit,true]].forEach(function(pv){
+            var st = pv[0], isC = pv[1];
+            if(st.value === null) return;
+            if(isC && !isCrit) return;
+            any = true; sum += st.value;
+            if(isC) critFaces.push(String(st.value)); else faces.push(String(st.value));
+          });
+        });
       }
 
-      var dm = sumMods(dmgBox), sum = 0, any = false;
-      var faces = [], critFaces = [];
-      dieRows.forEach(function(e){
-        [[e.main,false],[e.crit,true]].forEach(function(pv){
-          var inp = pv[0], isC = pv[1];
-          if(inp.disabled) return;
-          var v = parseInt(inp.value, 10);
-          if(isNaN(v)) return;
-          any = true; sum += v;
-          if(isC) critFaces.push(String(v)); else faces.push(String(v));
-        });
-      });
-
-      if(!any){
+      var total = null;
+      if(grabbing || !any){
         dmgN.textContent = "\u2013"; dmgN.className = "n empty";
-        dmgLab.textContent = "Damage";
+        dmgLab.innerHTML = "Damage";
       } else {
-        var d = Math.max(0, sum + dm.total);
-        dmgN.textContent = d; dmgN.className = "n";
-        dmgLab.innerHTML = "Damage" + (isCrit ? " <span style='color:var(--brass-hi)'>crit</span>" : "") +
-          "<br><span style='color:var(--dim);letter-spacing:.06em;'>" +
+        total = Math.max(0, sum + dm.total);
+        dmgN.textContent = total; dmgN.className = "n";
+        dmgLab.innerHTML = "Damage" + (isCrit ? " <span style='color:var(--yellow)'>crit</span>" : "") +
+          "<br><span style='color:var(--dimmer);letter-spacing:.06em;'>" +
           faces.join(" + ") +
-          (critFaces.length
-            ? " <span style='color:var(--brass-hi)'>+ " + critFaces.join(" + ") + "</span>"
-            : "") +
+          (critFaces.length ? " <span style='color:var(--yellow)'>+ " + critFaces.join(" + ") + "</span>" : "") +
           (dm.total ? (dm.total > 0 ? " +" : " \u2212") + Math.abs(dm.total) : "") +
           " \u00b7 bludgeoning</span>";
       }
+
+      card.readout = {
+        type: sel.value,
+        face: f,
+        crit: isCrit,
+        fumble: (f === 1),
+        atkParts: am.parts.slice(),
+        atkTotal: atkTotal,
+        faces: faces.slice(),
+        critFaces: critFaces.slice(),
+        dmgTotal: dm.total,
+        grapple: grabbing,
+        oh: state.oh,
+        ac: ac,
+        total: total
+      };
     };
 
     card.getDamage = function(){
-      if(state.mode !== "damage") return null;
-      var v = parseInt(dmgN.textContent, 10);
+      if(state.grapple) return null;
+      var v = parseInt(dmgN.textContent,10);
       return isNaN(v) ? null : v;
+    };
+    card.clearRolls = function(){
+      state.face = null; paintTicks(); centerOn(10,"auto");
+      dieRows.forEach(function(e){ e.main.value = null; e.crit.value = null; });
+      state.oh = null;
+      Array.prototype.forEach.call(ohB.children, function(x){ x.className = ""; });
+      state.grapple = false; grabCb.checked = false;
+    };
+    card.getAC = function(){ return acVal; };
+    card.setAC = function(v){
+      if(v === null || acVal !== null) return;
+      acVal = v; acCenter(v,"auto"); acPaint();
     };
     card.getType = function(){ return sel.value; };
     card.setType = function(v){ sel.value = v; sel.className = v ? "" : "unset"; };
-    card.lockType = function(on){
-      sel.disabled = on;
-      pairNote.innerHTML = on
-        ? "second strike of the Flurry \u2014 set on the first card"
-        : "";
-    };
-    card.setNote = function(html){ if(!sel.disabled) pairNote.innerHTML = html; };
-    card.groupId = null;
-    card.part = null;
+    card.lockType = function(on){ sel.disabled = on; };
+    card.isGrapple = function(){ return state.grapple; };
+    card.getOH = function(){ return state.oh; };
     card.setIndex = function(n){
-      idx.textContent = "Strike " + n +
-        (card.groupId ? " \u00b7 Flurry " + card.part + " of 2" : "");
+      idx.textContent = "Strike " + n + (card.groupId ? " \u00b7 Flurry " + card.part + " of 2" : "");
     };
     card.setRemovable = function(on){ kill.className = "kill" + (on ? "" : " hidden"); };
+    card.groupId = null; card.part = null;
 
     kill.addEventListener("click", function(){
       var doomed = card.groupId
@@ -1345,99 +1588,289 @@
       renumber(); refreshAll();
     });
 
+    if(cards.length) card.setAC(cards[0].getAC());
     if(after && after.parentNode === host){
       host.insertBefore(card, after.nextSibling);
-      cards.splice(cards.indexOf(after) + 1, 0, card);
+      cards.splice(cards.indexOf(after)+1, 0, card);
     } else {
-      host.appendChild(card);
-      cards.push(card);
+      host.appendChild(card); cards.push(card);
     }
-    padWheel();
-    window.addEventListener("resize", padWheel);
-    paintTicks();
+    padWheel(); acPad(); acPaint(); paintTicks();
+    window.addEventListener("resize", function(){ padWheel(); acPad(); });
     return card;
   }
 
+  /* =============== pairing =============== */
   var groupSeq = 0;
-
   function partnerOf(card){
-    for(var i = 0; i < cards.length; i++){
+    for(var i=0;i<cards.length;i++){
       if(cards[i] !== card && cards[i].groupId && cards[i].groupId === card.groupId) return cards[i];
     }
     return null;
   }
-
   function onTypeChange(card){
     var t = card.getType();
-    if(t === T_FLURRY){
+    if(cfg(t).paired){
       if(!card.groupId){
-        card.groupId = ++groupSeq;
-        card.part = 1;
+        card.groupId = ++groupSeq; card.part = 1;
         var partner = makeCard(card);
-        partner.groupId = card.groupId;
-        partner.part = 2;
-        partner.setType(T_FLURRY);
-        partner.lockType(true);
+        partner.groupId = card.groupId; partner.part = 2;
+        partner.setType(t); partner.lockType(true);
       }
     } else if(card.groupId){
       var p = partnerOf(card);
-      if(p){
-        cards = cards.filter(function(c){ return c !== p; });
-        p.remove();
-      }
-      card.groupId = null;
-      card.part = null;
-      card.lockType(false);
+      if(p){ cards = cards.filter(function(c){ return c !== p; }); p.remove(); }
+      card.groupId = null; card.part = null; card.lockType(false);
     }
-    renumber();
-    refreshAll();
+    renumber(); refreshAll();
   }
-
   function renumber(){
     cards.forEach(function(c,i){
       c.setIndex(i+1);
-      var pairLocked = c.groupId && cards.filter(function(x){
-        return x.groupId === c.groupId;
-      }).length;
+      var pairLocked = c.groupId && cards.filter(function(x){ return x.groupId === c.groupId; }).length;
       c.setRemovable(cards.length > (pairLocked || 1));
-      var t = c.getType();
-      if(t === T_CLUB && !G.club) c.setNote("Club is sheathed \u2014 flip it on above, or this is a bare fist.");
-      else if(t === T_BONUS) c.setNote("Free every turn after you Attack. No focus point.");
-      else if(t === T_FIST) c.setNote("The club is the better action strike while it\u2019s in hand.");
-      else if(t === T_FLURRY) c.setNote("Open Hand rides each hit. Grapple instead and you lose that rider.");
-      else c.setNote("");
     });
+  }
+
+  /* =============== turn readout =============== */
+  function turnTotal(){
+    var total = 0, n = 0;
+    cards.forEach(function(c){
+      var v = c.getDamage();
+      if(v === null) return;
+      n++; total += v;
+    });
+    return { total: total, count: n };
+  }
+
+  var OH_LABEL = { addle:"Addle", topple:"Topple", push:"Push" };
+
+  function renderReadout(){
+    var html = "", hits = 0, misses = 0, rolled = 0, grand = 0, grabs = 0;
+    cards.forEach(function(c,i){
+      var r = c.readout; if(!r) return;
+      var hasDice = r.faces.length || r.critFaces.length;
+      if(r.face === null && !hasDice && !r.grapple) return;
+      rolled++;
+
+      var verdict = "", vcls = "";
+      if(r.face !== null){
+        if(r.crit){ verdict="critical"; vcls="crit"; hits++; }
+        else if(r.fumble){ verdict="natural 1"; vcls="miss"; misses++; }
+        else if(r.ac !== null){
+          if(r.atkTotal >= r.ac){ verdict="hit"; vcls="hit"; hits++; }
+          else { verdict="miss"; vcls="miss"; misses++; }
+        }
+      }
+
+      var atk = "&ndash;";
+      if(r.face !== null){
+        atk = "<b>" + r.face + "</b> rolled";
+        r.atkParts.forEach(function(p){ atk += " + " + esc(p.replace(/^(.*?) \+/,"$1 ")); });
+        atk += " = <b>" + r.atkTotal + "</b>";
+        atk += (r.ac !== null) ? " <em>vs AC " + r.ac + "</em>"
+                               : " <span style='color:var(--dimmer)'>no AC set</span>";
+      }
+
+      var dmg = "", total = null, extra = "";
+      if(r.grapple){
+        grabs++;
+        extra = '<div class="ro-line"><span class="k">grapple</span><span class="f">' +
+                'Str or Dex save, its choice, <b>vs DC ' + GRAPPLE_DC + '</b> \u2014 no damage</span></div>';
+      } else if(hasDice){
+        var sum = r.faces.concat(r.critFaces).reduce(function(a,b){ return a+parseInt(b,10); },0);
+        total = Math.max(0, sum + r.dmgTotal);
+        dmg = (r.faces.join(" + ") || "0") +
+              (r.critFaces.length ? " + <em>" + r.critFaces.join(" + ") + "</em>" : "") +
+              (r.dmgTotal ? " + " + r.dmgTotal : "") +
+              " = <b>" + total + "</b> bludgeoning";
+        grand += total;
+      }
+      if(r.oh){
+        var dcTxt = (r.oh === "addle") ? "no save"
+          : (r.oh === "topple" ? "Dex" : "Str") + " save vs <b>DC " + MONK_DC + "</b>";
+        extra += '<div class="ro-line"><span class="k">open hand</span><span class="f">' +
+                 OH_LABEL[r.oh] + " \u2014 " + dcTxt + '</span></div>';
+      }
+
+      html += '<div class="ro">' +
+        '<div class="ro-head">' +
+          '<span class="n">Strike ' + (i+1) + '</span>' +
+          '<span class="t">' + (r.type ? esc(r.type.replace(" \u2014 "," ")) : "no type set") +
+            (r.grapple ? " &middot; grapple" : "") + '</span>' +
+          (verdict ? '<span class="v ' + vcls + '">' + verdict + '</span>' : '') +
+        '</div>' +
+        '<div class="ro-body"><div class="ro-lines">' +
+          '<div class="ro-line"><span class="k">to hit</span><span class="f">' + atk + '</span></div>' +
+          (dmg ? '<div class="ro-line"><span class="k">damage</span><span class="f">' + dmg + '</span></div>' : '') +
+          extra +
+        '</div>' +
+        '<div class="ro-total' + (total === null ? ' none' : '') + '">' +
+          (total === null ? "&ndash;" : total) + '</div>' +
+        '</div></div>';
+    });
+
+    $("readout").innerHTML = html;
+    if(!rolled){ $("roSum").innerHTML = "nothing rolled yet"; return; }
+    var verdictLine = (hits + misses === 0)
+      ? rolled + " strike" + (rolled === 1 ? "" : "s") + " entered"
+      : "<b>" + hits + "</b> hit &middot; <b>" + misses + "</b> missed";
+    $("roSum").innerHTML = verdictLine +
+      (grabs ? " &middot; <b>" + grabs + "</b> grapple" + (grabs===1?"":"s") : "") +
+      '<br><span class="big">' + grand + '</span> total this turn';
+  }
+
+  /* =============== history =============== */
+  function renderHistory(){
+    $("histCount").textContent = history.length + (history.length === 1 ? " turn" : " turns");
+    if(!history.length){
+      $("hist").innerHTML = '<div class="hist-empty">No turns committed yet this session.</div>';
+      return;
+    }
+    var html = "";
+    history.forEach(function(e,i){
+      var lines = e.strikes.map(function(st){
+        var verdict = st.crit ? "crit" : st.fumble ? "nat 1"
+          : (st.ac !== null && st.atk !== null) ? (st.atk >= st.ac ? "hit" : "miss") : "";
+        var roll = (st.face === null) ? "\u2014"
+          : st.face + " \u2192 <b>" + st.atk + "</b>" + (st.ac !== null ? " vs " + st.ac : "");
+        var dm = st.faces.join("+");
+        return "&middot; " + esc(st.type.replace(" \u2014 "," ")) +
+               " &nbsp;" + roll + (verdict ? " <b>" + verdict + "</b>" : "") +
+               (dm ? " &nbsp;dmg " + dm : "") +
+               (st.grapple ? " &nbsp;<b>grapple " + GRAPPLE_DC + "</b>" : "") +
+               (st.oh ? " &nbsp;<b>" + OH_LABEL[st.oh] + "</b>" : "");
+      }).join("<br>");
+      html += '<div class="ht">' +
+        '<div class="ht-head"><span class="n">Turn ' + (i+1) + '</span>' +
+        '<span class="tm">' + e.time + (e.focus ? " \u00b7 " + e.focus + " focus" : "") + '</span>' +
+        '<span class="tot">' + e.total + '</span></div>' +
+        '<div class="ht-line">' + lines + '</div></div>';
+    });
+    $("hist").innerHTML = html;
+  }
+
+  /* =============== session =============== */
+  function startSession(){
+    history = []; sessionDay = today();
+    bankedFocus = 0; uncannyUsed = false;
+    jauntUsed = [false,false];
+    Array.prototype.forEach.call($("jaunt").children, function(b){
+      b.className = ""; b.setAttribute("aria-pressed","false");
+    });
+    lastTurn = null; bestTurn = null;
+    G.club = true; G.reaction = false;
+    $("swClub").setAttribute("aria-pressed","true");
+    $("effClub").className = "eff";
+    $("dIn").value = ""; $("dRoll").value = "";
+    paintDeflect();
+    freshTurn(); renderHistory();
   }
 
   function refreshAll(){
     cards.forEach(function(c){ c.recalc(); });
     renumber();
-    paintEconomy();
-    paintNow();
-    var vals = cards.map(function(c){ return c.getDamage(); })
-                    .filter(function(v){ return v !== null; });
-    $("turnTotal").textContent = vals.reduce(function(a,b){ return a+b; }, 0);
-    $("runs").textContent = vals.length ? vals.join(" + ") : "nothing yet";
+    paintEconomy(); paintNow(); renderReadout();
+    var t = turnTotal();
+    $("turnTotal").textContent = t.total;
+    var grabs = cards.filter(function(c){ return c.isGrapple(); }).length;
+    $("runs").textContent = t.count
+      ? t.count + " strike" + (t.count===1?"":"s") + (grabs ? " \u00b7 " + grabs + " grapple" : "")
+      : (grabs ? grabs + " grapple" + (grabs===1?"":"s") : "nothing yet");
+    $("commit").disabled = (t.count === 0 && grabs === 0);
+    $("lastTurn").textContent = (lastTurn === null) ? "\u2013" : lastTurn;
+    $("bestTurn").textContent = (bestTurn === null) ? "\u2013" : bestTurn;
   }
 
+  function freshTurn(){
+    var keepAC = cards.length ? cards[0].getAC() : null;
+    cards.slice().forEach(function(c){ c.remove(); });
+    cards = []; G.reaction = false;
+    var fresh = makeCard();
+    if(keepAC !== null) fresh.setAC(keepAC);
+    renumber(); refreshAll();
+    if(window.scrollTo) try{ window.scrollTo({top:0, behavior:"smooth"}); }catch(e){}
+  }
+
+  /* =============== two-tap confirm =============== */
+  var armed = null, armTimer = null;
+  function disarm(){
+    if(armed){ armed.el.textContent = armed.label; armed.el.className = armed.cls; armed = null; }
+    clearTimeout(armTimer);
+  }
+  function confirmTap(elm, prompt, act){
+    if(armed && armed.el === elm){ var fn = armed.act; disarm(); fn(); return; }
+    disarm();
+    armed = { el:elm, label:elm.textContent, cls:elm.className, act:act };
+    elm.textContent = prompt; elm.className = armed.cls + " arm";
+    armTimer = setTimeout(disarm, 4000);
+  }
+
+  function doCommit(){
+    var t = turnTotal();
+    var grabs = cards.filter(function(c){ return c.isGrapple(); }).length;
+    if(!t.count && !grabs) return;
+    lastTurn = t.total;
+    var isBest = (bestTurn === null) || (t.total > bestTurn);
+    if(isBest) bestTurn = t.total;
+    var bestEl = $("bestTurn").parentNode;
+    bestEl.className = "st best" + (isBest ? " fresh" : "");
+    setTimeout(function(){ bestEl.className = "st best"; }, 600);
+
+    var spent = pendingFocus();
+    bankedFocus += spent;
+
+    var entry = { time: clockNow(), total: t.total, focus: spent, strikes: [] };
+    cards.forEach(function(c){
+      var r = c.readout; if(!r) return;
+      if(r.face === null && !r.faces.length && !r.grapple) return;
+      entry.strikes.push({
+        type: r.type || "no type", face: r.face, atk: r.atkTotal, ac: r.ac,
+        crit: r.crit, fumble: r.fumble, grapple: r.grapple, oh: r.oh,
+        faces: r.faces.concat(r.critFaces)
+      });
+    });
+    history.push(entry);
+    renderHistory();
+    freshTurn();
+  }
+
+  function clearRolls(){
+    cards.forEach(function(c){ c.clearRolls(); });
+    G.reaction = false;
+    refreshAll();
+  }
+
+  $("commit").addEventListener("click", function(){
+    var grabs = cards.filter(function(c){ return c.isGrapple(); }).length;
+    if(!turnTotal().count && !grabs) return;
+    confirmTap(this, "Confirm?", doCommit);
+  });
+  $("reset").addEventListener("click", function(){ confirmTap(this, "Discard?", freshTurn); });
+  $("clearRolls").addEventListener("click", clearRolls);
+  $("histToggle").addEventListener("click", function(){
+    var h = $("hist"); h.hidden = !h.hidden;
+    this.textContent = h.hidden ? "Show history" : "Hide history";
+  });
+  $("sessionReset").addEventListener("click", function(){ confirmTap(this, "Reset?", startSession); });
+  $("gateNew").addEventListener("click", function(){ startSession(); $("gate").hidden = true; });
+  $("gateResume").addEventListener("click", function(){ $("gate").hidden = true; });
   $("addAttack").addEventListener("click", function(){
     var c = makeCard(); renumber(); refreshAll();
-    if(c.scrollIntoView) c.scrollIntoView({ behavior:"smooth", block:"start" });
+    if(c.scrollIntoView) c.scrollIntoView({behavior:"smooth", block:"start"});
   });
+  document.addEventListener("click", function(e){
+    if(armed && !armed.el.contains(e.target)) disarm();
+  }, true);
 
-  $("reset").addEventListener("click", function(){
-    cards.slice().forEach(function(c){ c.remove(); });
-    cards = [];
-    G.reaction = false;
-    makeCard(); renumber(); refreshAll();
-    if(window.scrollTo) try{ window.scrollTo({ top:0, behavior:"smooth" }); }catch(e){}
-  });
-
-  buildPips();
-  paintDeflect();
-  makeCard();
-  renumber();
-  refreshAll();
+  (function boot(){
+    makeCard(); renumber(); refreshAll(); renderHistory(); paintDeflect();
+    sessionDay = today();
+    $("gateLine").innerHTML = "Ready to play &middot; " + sessionDay +
+      "<br>A session covers one day. Starting a new one clears the history, " +
+      "the focus spend and the turn records.";
+    $("gateResume").hidden = true;
+  })();
 })();
 </script>
 </body>
