@@ -635,6 +635,27 @@
   .combat .st.best.fresh{border-color:var(--cyan);}
 
 
+  /* ---------- strike type picker ---------- */
+  .stype{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:9px;}
+  .sbtn{
+    appearance:none;min-height:50px;padding:7px 8px;text-align:left;cursor:pointer;
+    background:var(--void);border:1px solid var(--line);border-radius:6px;color:var(--mute);
+    font-family:"Archivo",sans-serif;font-size:13.5px;font-weight:600;line-height:1.15;
+  }
+  .sbtn em{
+    display:block;font-style:normal;font-family:"IBM Plex Mono",monospace;
+    font-size:8.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--dimmer);margin-top:3px;
+  }
+  .sbtn:last-child{grid-column:1 / -1;}
+  .sbtn.on{
+    background:var(--pink);border-color:var(--pink);color:#1A0010;
+    box-shadow:0 0 14px rgba(255,45,149,.35);
+  }
+  .sbtn.on em{color:#5E0030;}
+  .stype.locked .sbtn{opacity:.45;cursor:default;}
+  .stype.locked .sbtn.on{opacity:1;}
+
   /* ---------- tabs ---------- */
   .tabs{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:14px;}
   .tabs button{
@@ -717,7 +738,7 @@
 
   <header>
     <h1>It's <span>Monkin'</span> Time</h1>
-    <div class="who">CM Monk<br><em>Monk 3 &middot; Open Hand</em></div>
+    <div class="who">CM Monk<br><em>Monk 4 &middot; Open Hand</em></div>
   </header>
 
   <div class="tabs" role="tablist">
@@ -726,6 +747,9 @@
   </div>
 
   <div id="paneRoll">
+
+  <div id="attacks"></div>
+  <button id="addAttack" type="button">+ Add attack roll</button>
 
   <!-- ============ ACTION ECONOMY ============ -->
   <div class="block">
@@ -752,12 +776,15 @@
     </div>
 
     <div class="charge-row">
-      <span class="cn"><b>Uncanny Metabolism</b><small>on initiative &middot; all spent focus back, heal 1d6+3</small></span>
+      <span class="cn"><b>Uncanny Metabolism</b><small>on initiative &middot; all spent focus back, heal 1d6+4</small></span>
       <button type="button" id="uncannyUse">Use</button>
     </div>
     <div class="charge-row">
-      <span class="cn"><b>Cloud's Jaunt</b><small>bonus action &middot; teleport 30 ft &middot; never provokes</small></span>
+      <span class="cn"><b>Cloud's Jaunt</b><small>bonus action &middot; teleport 30 ft &middot; uses = prof bonus</small></span>
       <span class="jaunt" id="jaunt"></span>
+    </div>
+    <div class="charge-row">
+      <span class="cn"><b>Slow Fall</b><small>reaction when you fall &middot; reduce the damage by 20</small></span>
     </div>
   </div>
 
@@ -775,12 +802,12 @@
       </div>
     </div>
     <div class="now">
-      <div><span class="k">Club strike</span><span class="v" id="nowClub">+6 &middot; 1d6+4</span></div>
-      <div><span class="k">Unarmed strike</span><span class="v" id="nowFist">+5 &middot; 1d6+3</span></div>
+      <div><span class="k">Club strike</span><span class="v" id="nowClub">+7 &middot; 1d6+5</span></div>
+      <div><span class="k">Unarmed strike</span><span class="v" id="nowFist">+6 &middot; 1d6+4</span></div>
     </div>
     <div class="now">
       <div><span class="k">Monk DC &middot; Wis</span><span class="v"><em>12</em></span></div>
-      <div><span class="k">Grapple DC &middot; no roll</span><span class="v"><em>13</em></span></div>
+      <div><span class="k">Grapple DC &middot; no roll</span><span class="v"><em>14</em></span></div>
     </div>
   </div>
 
@@ -806,8 +833,6 @@
     </div>
   </div>
 
-  <div id="attacks"></div>
-  <button id="addAttack" type="button">+ Add attack roll</button>
 
   </div><!-- /paneRoll -->
 
@@ -900,31 +925,34 @@
   var $ = function(id){ return document.getElementById(id); };
 
   /* =============== CM Monk, goliath monk 3, Warrior of the Open Hand =============== */
-  var DEX = 3, WIS = 2, PROF = 2, CLUB = 1;
+  var DEX = 4, WIS = 2, PROF = 2, CLUB = 1;   // Dex 18 after Grappler's +1
   var MONK_DC    = 8 + WIS  + PROF;   // 12 - Open Hand Push/Topple, Deflect redirect
   var GRAPPLE_DC = 8 + DEX  + PROF;   // 13 - Martial Arts carve-out for Grapple/Shove
   var MARTIAL_DIE = 6;                // d6 until level 5
-  var FOCUS_MAX = 3;                  // equal to monk level
-  var DEFL_FLAT = DEX + 3;            // 1d10 + Dex + monk level
+  var MONK_LVL  = 4;
+  var FOCUS_MAX = MONK_LVL;           // equal to monk level
+  var DEFL_FLAT = DEX + MONK_LVL;     // 1d10 + Dex + monk level
 
   var UNSET = "";
   var T_CLUB   = "Action \u2014 +1 Club";
   var T_FIST   = "Action \u2014 Unarmed Strike";
+  var T_PNG    = "Action \u2014 Punch and Grab";
   var T_BONUS  = "Bonus Action \u2014 Unarmed Strike";
   var T_FLURRY = "Flurry of Blows";
 
   var STRIKE_TYPES = [
-    [UNSET, "Choose strike type\u2026"],
-    [T_CLUB,   "Action \u2014 +1 Club"],
-    [T_FIST,   "Action \u2014 Unarmed Strike"],
-    [T_BONUS,  "Bonus Action \u2014 Unarmed Strike"],
-    [T_FLURRY, "Flurry of Blows (2 strikes)"]
+    [T_CLUB,   "+1 Club",      "action \u00b7 +7 \u00b7 1d6+5"],
+    [T_FIST,   "Unarmed",      "action \u00b7 +6 \u00b7 1d6+4"],
+    [T_PNG,    "Punch &amp; Grab", "action \u00b7 hit, then DC 14"],
+    [T_BONUS,  "Bonus strike", "bonus \u00b7 free"],
+    [T_FLURRY, "Flurry of Blows", "bonus \u00b7 1 focus \u00b7 two strikes, each with an Open Hand effect"]
   ];
 
   // paired = spawns a second card; kind drives which modifiers apply
   var CFG = {};
   CFG[T_CLUB]   = { paired:false, kind:"club",    focus:0, slot:"action" };
   CFG[T_FIST]   = { paired:false, kind:"unarmed", focus:0, slot:"action" };
+  CFG[T_PNG]    = { paired:false, kind:"unarmed", focus:0, slot:"action" };
   CFG[T_BONUS]  = { paired:false, kind:"unarmed", focus:0, slot:"bonus"  };
   CFG[T_FLURRY] = { paired:true,  kind:"unarmed", focus:1, slot:"bonus"  };
   function cfg(t){ return CFG[t] || { paired:false, kind:"unarmed", focus:0, slot:"" }; }
@@ -1015,10 +1043,11 @@
 
   function paintEconomy(){
     var action = 0, bonusSingles = 0, flurryGroups = [], unset = 0;
-    var grapples = 0, ohCount = 0;
+    var grapples = 0, ohCount = 0, pngs = 0;
     cards.forEach(function(c){
       var t = c.getType();
       if(c.isGrapple()) grapples++;
+      if(c.getType() === T_PNG) pngs++;
       if(c.getOH()) ohCount++;
       if(!t){ unset++; return; }
       var k = cfg(t);
@@ -1047,6 +1076,9 @@
       lines.push("Flurry: <b>two strikes</b>, one bonus action, one focus point.");
     if(grapples)
       lines.push("A Grapple is a <b>saving throw only</b> \u2014 no attack roll, no damage, no Open Hand rider.");
+    if(pngs)
+      lines.push("Punch and Grab: <b>hit first</b>, then the DC " + GRAPPLE_DC +
+                 " save. Once per turn, Attack action only.");
     if(!warn.length && !lines.length){
       lines.push(unset
         ? "Pick a strike type on each card and these tick themselves."
@@ -1373,18 +1405,31 @@
     line.appendChild(idx); line.appendChild(kill);
     top.appendChild(line);
 
-    var sel = el("select");
+    state.type = UNSET;
+    var stype = el("div","stype");
+    stype.setAttribute("role","group");
+    stype.setAttribute("aria-label","Strike type");
     STRIKE_TYPES.forEach(function(t){
-      var o = el("option"); o.value = t[0]; o.textContent = t[1]; sel.appendChild(o);
+      var b = el("button","sbtn", t[1] + "<em>" + t[2] + "</em>");
+      b.type = "button"; b.dataset.v = t[0];
+      b.setAttribute("aria-pressed","false");
+      b.addEventListener("click", function(){
+        if(stype.classList.contains("locked")) return;
+        state.type = (state.type === t[0]) ? UNSET : t[0];
+        paintType();
+        onTypeChange(card);
+      });
+      stype.appendChild(b);
     });
-    sel.value = UNSET;
-    sel.setAttribute("aria-label","Strike type");
-    sel.className = "unset";
-    sel.addEventListener("change", function(){
-      sel.className = sel.value ? "" : "unset";
-      onTypeChange(card);
-    });
-    top.appendChild(sel);
+    function paintType(){
+      Array.prototype.forEach.call(stype.children, function(b){
+        var on = (b.dataset.v === state.type);
+        b.className = "sbtn" + (on ? " on" : "");
+        b.setAttribute("aria-pressed", on ? "true" : "false");
+      });
+    }
+    paintType();
+    top.appendChild(stype);
 
     // grapple toggle, per strike
     var grab = el("label","grab");
@@ -1695,17 +1740,21 @@
     card.recalc = function(){
       var f = state.face;
       var isCrit = (f === 20);
-      var type = sel.value;
+      var type = state.type;
       var k = cfg(type).kind;
       var isClub = (k === "club");
       var clubLive = isClub && G.club;
       var isFlurry = (type === T_FLURRY);
+      var isPNG    = (type === T_PNG);
+
+      // nothing below the picker exists until a strike type is chosen
+      pad.hidden = !type;
 
       card.classList.toggle("is-crit", isCrit);
 
       // a club swing is a weapon attack: it cannot Grapple
-      grab.className = "grab" + (isClub ? " hide" : "") + (state.grapple ? " on" : "");
-      if(isClub && state.grapple){
+      grab.className = "grab" + ((!type || isClub || isPNG) ? " hide" : "") + (state.grapple ? " on" : "");
+      if((isClub || isPNG) && state.grapple){
         state.grapple = false; grabCb.checked = false;
         grab.className = "grab hide";
       }
@@ -1723,7 +1772,7 @@
         });
       });
 
-      // Open Hand rides Flurry hits only
+      // Open Hand rides Flurry hits only \u2014 never the Attack action, so never Punch and Grab
       var ohLive = isFlurry && !grabbing;
       ohWrap.hidden = !ohLive;
       if(!ohLive && state.oh){
@@ -1731,7 +1780,8 @@
         Array.prototype.forEach.call(ohB.children, function(x){ x.className = ""; });
       }
 
-      // a Grapple is a saving throw only \u2014 no attack roll, no target AC, no d20
+      // a Grapple is a saving throw only \u2014 no attack roll, no target AC, no d20.
+      // Punch and Grab is the exception: it uses the Damage option, so the attack roll stays.
       atkZone.hidden = grabbing;
 
       // grapple replaces the strike's damage entirely
@@ -1788,10 +1838,19 @@
           '<div class="df">8 + ' + DEX + ' Dex + ' + PROF + ' prof = ' + GRAPPLE_DC +
           ' &middot; Martial Arts\u2019 Dexterous Attacks lets a Grapple use Dex in place of Str.<br>' +
           '<b>On a failure:</b> Grappled \u2014 speed 0, and disadvantage on its attacks against anyone but me. ' +
-          'Dragging it costs me 1 extra foot per foot moved.<br>' +
+          '<b>I then have advantage on every attack against it</b> (Grappler).<br>' +
           '<b>Escaping</b> costs it an action: Str (Athletics) or Dex (Acrobatics) against the same DC ' +
           GRAPPLE_DC + '. It also ends if I am Incapacitated.<br>' +
-          '<b>Requires</b> a free hand, and a target no more than one size larger than me.</div></div>'
+          '<b>Requires</b> a free hand, and a target no more than one size larger than me (Large).</div></div>'
+        : isPNG
+        ? '<div class="dm"><div class="dt">Punch and Grab \u2014 roll to hit first</div>' +
+          '<div class="dl">On a hit: damage <em>and</em> a grapple. It makes a <em>Str or Dex save, its choice, ' +
+          'against DC ' + GRAPPLE_DC + '</em>.</div>' +
+          '<div class="df">Grappler, once per turn, <b>Attack action only</b> \u2014 it never works off Flurry.<br>' +
+          'Unlike a plain Grapple, this one <b>needs the attack roll to land</b>, because you are using the ' +
+          'Damage option as well.<br>' +
+          '<b>No Open Hand rider</b> \u2014 that only rides Flurry hits.<br>' +
+          'Once it is Grappled, <b>every attack you make against it has advantage</b>.</div></div>'
         : "";
 
       var dmLine = "";
@@ -1819,12 +1878,15 @@
       ohDM.innerHTML = dmLine;
 
       pairNote.innerHTML =
-        (isClub && !G.club) ? "Club is sheathed \u2014 flip it on above, or this is a bare fist."
+        (!type) ? "Pick a strike above."
+        : (isClub && !G.club) ? "Club is sheathed \u2014 flip it on above, or this is a bare fist."
         : (type === T_BONUS) ? "Free every turn. No focus point."
         : (type === T_FIST && G.club) ? "The club is the better action strike while it is in hand."
+        : isPNG ? "Hit first, then the DC " + GRAPPLE_DC + " save. Costs the club swing. No Open Hand rider."
         : (isFlurry) ? "Open Hand rides each Flurry hit. Grapple instead and you lose that rider."
         : "";
-      if(sel.disabled) pairNote.innerHTML = "second strike of the Flurry \u2014 set on the first card";
+      if(stype.classList.contains("locked"))
+        pairNote.innerHTML = "second strike of the Flurry \u2014 set on the first card";
 
       /* damage */
       var dm = grabbing ? {total:0,parts:[]} : sumMods(dmgBox);
@@ -1857,7 +1919,7 @@
       }
 
       card.readout = {
-        type: sel.value,
+        type: state.type,
         face: f,
         crit: isCrit,
         fumble: (f === 1),
@@ -1890,9 +1952,9 @@
       if(v === null || acVal !== null) return;
       acVal = v; acCenter(v,"auto"); acPaint();
     };
-    card.getType = function(){ return sel.value; };
-    card.setType = function(v){ sel.value = v; sel.className = v ? "" : "unset"; };
-    card.lockType = function(on){ sel.disabled = on; };
+    card.getType = function(){ return state.type; };
+    card.setType = function(v){ state.type = v; paintType(); };
+    card.lockType = function(on){ stype.classList.toggle("locked", !!on); };
     card.isGrapple = function(){ return state.grapple; };
     card.getOH = function(){ return state.oh; };
     card.setIndex = function(n){
@@ -1989,7 +2051,13 @@
       }
 
       var atk = "&ndash;";
-      if(r.grapple){
+      if(r.type === T_PNG && r.face !== null){
+        atk = "<b>" + r.face + "</b> rolled";
+        r.atkParts.forEach(function(p){ atk += " + " + esc(p.replace(/^(.*?) \+/,"$1 ")); });
+        atk += " = <b>" + r.atkTotal + "</b>";
+        atk += (r.ac !== null) ? " <em>vs AC " + r.ac + "</em> \u00b7 then a DC " + GRAPPLE_DC + " save"
+                               : " \u00b7 then a DC " + GRAPPLE_DC + " save";
+      } else if(r.grapple){
         atk = "<em>no attack roll</em> \u2014 a saving throw only";
       } else if(r.face !== null){
         atk = "<b>" + r.face + "</b> rolled";
