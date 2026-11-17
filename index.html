@@ -210,6 +210,7 @@
     font-family:"IBM Plex Mono",monospace;font-size:9px;letter-spacing:.05em;
     color:var(--dim);display:block;margin-top:3px;line-height:1.5;
   }
+  .eff-name small b{display:inline;font-size:inherit;color:var(--mute);}
   .sw{
     width:47px;height:27px;border-radius:14px;border:1px solid var(--line);
     background:var(--void);position:relative;flex:none;cursor:pointer;padding:0;appearance:none;
@@ -315,6 +316,11 @@
     letter-spacing:-.035em;display:block;font-style:italic;
   }
   .readout .n.empty{color:var(--line);}
+  /* before a face is tapped there is no number yet — collapse the 62px void */
+  .readout.blank{padding:9px 0 8px;}
+  .readout.blank .n,
+  .readout.blank .lab{display:none;}
+  .readout.blank .math{margin-top:0;}
   .readout.crit .n{color:var(--yellow);text-shadow:0 0 22px rgba(255,229,0,.55);}
   .readout.fumble .n{color:var(--dimmer);}
   .readout .lab{
@@ -345,38 +351,112 @@
   .verdict.miss{color:var(--dimmer);border-color:var(--line);}
   .verdict.crit{color:var(--yellow);border-color:var(--yellow-dim);background:var(--yellow-wash);}
 
-  /* wheels */
-  .wheel-wrap{position:relative;margin:2px -12px 0;}
-  .wheel{
-    display:flex;gap:0;overflow-x:auto;scroll-snap-type:x mandatory;
-    scrollbar-width:none;-ms-overflow-style:none;padding:6px 0;
+  /* d20 face grid */
+  .facegrid{
+    display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:6px 0 0;
   }
-  .wheel::-webkit-scrollbar{display:none;}
-  .tick{
-    appearance:none;flex:none;width:52px;height:52px;scroll-snap-align:center;
-    background:transparent;border:0;color:var(--dimmer);
-    font-family:"Archivo",sans-serif;font-weight:700;font-size:19px;cursor:pointer;
-    transition:color .12s,transform .12s;padding:0;
+  .face{
+    appearance:none;padding:12px 0;border-radius:8px;
+    background:var(--panel-2);border:1px solid var(--line);color:var(--mute);
+    font-family:"Archivo",sans-serif;font-weight:800;font-size:18px;
+    cursor:pointer;transition:background .12s,border-color .12s,color .12s,transform .08s;
+    -webkit-tap-highlight-color:transparent;
   }
-  .tick.near{color:var(--mute);}
-  .tick.sel{color:var(--text);transform:scale(1.3);font-weight:900;}
-  .tick.sel.hot{color:var(--yellow);}
-  .wheel-wrap.ac .tick{width:44px;height:44px;font-size:17px;}
-  .wheel-wrap.ac .tick.sel{color:var(--cyan);}
-  .wheel-frame{
-    position:absolute;top:6px;left:50%;transform:translateX(-50%);
-    width:52px;height:52px;border:1px solid var(--line);border-radius:8px;
-    pointer-events:none;transition:border-color .15s;
+  .face:active{transform:scale(.93);}
+  .face.sel{
+    background:var(--pink-wash);border-color:var(--pink);color:var(--pink-hi);
+    font-weight:900;box-shadow:0 0 13px rgba(255,45,149,.28);
   }
-  .wheel-wrap.ac .wheel-frame{width:44px;height:44px;}
-  .wheel-frame.live{border-color:var(--pink);box-shadow:0 0 14px rgba(255,45,149,.3);}
-  .wheel-wrap.ac .wheel-frame.live{border-color:var(--cyan);box-shadow:0 0 14px rgba(0,229,255,.3);}
-  .fade{position:absolute;top:0;bottom:0;width:56px;pointer-events:none;}
-  .fade.l{left:0;background:linear-gradient(90deg,var(--panel),transparent);}
-  .fade.r{right:0;background:linear-gradient(270deg,var(--panel),transparent);}
+  .face.sel.hot{
+    background:var(--yellow-wash);border-color:var(--yellow);color:var(--yellow-hi);
+    box-shadow:0 0 13px rgba(255,229,0,.3);
+  }
+  .face.sel.cold{
+    background:transparent;border-color:var(--dimmer);color:var(--dimmer);
+    box-shadow:none;
+  }
+  .facegrid.ck .face.sel{
+    background:var(--cyan-wash);border-color:var(--cyan);color:var(--cyan-hi);
+    box-shadow:0 0 13px rgba(0,229,255,.28);
+  }
+
+  /* DC / AC dropdown */
+  .dcpick{
+    display:flex;align-items:center;gap:10px;
+    padding:11px 0 2px;margin-top:10px;border-top:1px solid var(--line-soft);
+  }
+  .dcpick .k{
+    font-family:"IBM Plex Mono",monospace;font-size:9px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--dim);flex:1;
+  }
+  .dcsel{
+    appearance:none;-webkit-appearance:none;flex:none;
+    width:auto;min-width:98px;margin-top:0;
+    background:var(--panel-2);border:1px solid var(--line);border-radius:7px;
+    color:var(--text);font-family:"Archivo",sans-serif;font-weight:800;font-size:17px;
+    padding:9px 30px 9px 13px;cursor:pointer;text-align:left;
+    background-image:url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%238A6FB2' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;background-position:right 11px center;background-size:10px 6px;
+  }
+  .dcsel:focus{outline:none;border-color:var(--pink);}
+  .dcsel.live{border-color:var(--cyan);color:var(--cyan-hi);}
+  .dcsel option{background:var(--panel);color:var(--text);font-size:15px;}
   .wheel-cap{
     font-family:"IBM Plex Mono",monospace;font-size:9px;letter-spacing:.1em;
-    text-transform:uppercase;color:var(--dimmer);text-align:center;margin-top:2px;
+    text-transform:uppercase;color:var(--dimmer);text-align:center;margin-top:7px;
+  }
+  .wheel-cap.adv{color:var(--yellow);}
+
+  /* did the grapple land? */
+  .gres{
+    margin-top:10px;padding:11px;border-radius:8px;
+    border:1px dashed var(--line);background:var(--panel-2);
+  }
+  .gres.hide{display:none;}
+  .gres .gq{
+    font-family:"IBM Plex Mono",monospace;font-size:9px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--dim);margin-bottom:8px;
+  }
+  .gres .gbtns{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+  .gres .gb{
+    appearance:none;padding:11px 8px;border-radius:7px;cursor:pointer;
+    background:var(--void);border:1px solid var(--line);color:var(--mute);
+    font-family:"IBM Plex Mono",monospace;font-size:10px;font-weight:600;
+    letter-spacing:.08em;text-transform:uppercase;line-height:1.4;
+    transition:background .12s,border-color .12s,color .12s;
+  }
+  .gres .gb small{
+    display:block;font-size:8.5px;letter-spacing:.05em;
+    font-weight:400;text-transform:none;color:var(--dimmer);margin-top:3px;
+  }
+  .gres .gb.on.win{
+    background:var(--yellow-wash);border-color:var(--yellow);color:var(--yellow-hi);
+  }
+  .gres .gb.on.win small{color:var(--yellow-hi);opacity:.8;}
+  .gres .gb.on.lose{
+    background:rgba(255,255,255,.04);border-color:var(--dim);color:var(--text);
+  }
+  .gres.settled{border-style:solid;}
+  .gres.settled.win{border-color:var(--yellow-dim);}
+  .gres.dead{opacity:.45;}
+  .gres .gb:disabled{cursor:default;}
+
+  /* advantage banner on every strike after the grapple landed */
+  .advbar{
+    display:flex;align-items:center;gap:9px;margin:10px 0 0;
+    padding:10px 11px;border-radius:8px;
+    border:1px solid var(--yellow);background:var(--yellow-wash);
+  }
+  .advbar.hide{display:none;}
+  .advbar .at{
+    font-family:"IBM Plex Mono",monospace;font-size:9px;font-weight:700;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--yellow);
+    border:1px solid var(--yellow-dim);border-radius:5px;padding:4px 8px;flex:none;
+  }
+  .advbar .ax{font-size:11.5px;line-height:1.45;color:var(--text);}
+  .advbar .ax b{color:var(--yellow-hi);font-weight:600;}
+  .idx .advtag{
+    color:var(--yellow);margin-left:7px;font-size:9px;letter-spacing:.1em;
   }
 
   .sect{
@@ -528,12 +608,25 @@
   .dmg-bar .n.empty{color:var(--line);}
 
   #addAttack{
-    appearance:none;width:100%;background:var(--panel);border:1px solid var(--line);
-    border-radius:7px;color:var(--text);font-family:"IBM Plex Mono",monospace;
-    font-size:10px;letter-spacing:.14em;text-transform:uppercase;
-    padding:15px;cursor:pointer;margin-bottom:14px;
+    appearance:none;width:100%;background:var(--pink);border:1px solid var(--pink);
+    border-radius:7px;color:#2A0012;font-family:"IBM Plex Mono",monospace;
+    font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+    padding:16px;cursor:pointer;margin-bottom:14px;
+    box-shadow:0 0 18px rgba(255,45,149,.3);
   }
-  #addAttack:active{border-color:var(--pink);color:var(--pink-hi);}
+  #addAttack:active{background:var(--pink-hi);border-color:var(--pink-hi);}
+
+  .empty-strikes{
+    border:1px dashed var(--line);border-radius:10px;
+    padding:22px 16px;text-align:center;margin-bottom:14px;background:var(--panel);
+  }
+  .empty-strikes[hidden]{display:none;}
+  .empty-strikes b{display:block;font-size:14px;font-weight:600;margin-bottom:5px;}
+  .empty-strikes span{
+    font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.05em;
+    color:var(--dim);line-height:1.6;display:block;
+  }
+  .empty-strikes em{color:var(--pink-hi);font-style:normal;}
 
   /* readout + history */
   .ro{border:1px solid var(--line);border-radius:6px;margin-bottom:8px;overflow:hidden;}
@@ -748,8 +841,12 @@
 
   <div id="paneRoll">
 
-  <div id="attacks"></div>
   <button id="addAttack" type="button">+ Add attack roll</button>
+  <div id="attacks"></div>
+  <div id="noStrikes" class="empty-strikes">
+    <b>No strike on the table.</b>
+    <span>Tap <em>+ Add attack roll</em> to open Strike 1, then pick what you are throwing.</span>
+  </div>
 
   <!-- ============ ACTION ECONOMY ============ -->
   <div class="block">
@@ -799,6 +896,17 @@
           strike are <b>Unarmed Strikes</b> and get nothing from it. Club in hand means the horn is not.</small>
         </span>
         <button class="sw" type="button" id="swClub" aria-pressed="true" aria-label="Toggle the +1 Club"></button>
+      </div>
+    </div>
+    <div class="eff off" id="effGrab">
+      <div class="eff-top">
+        <span class="eff-name">
+          <b>Still holding the grapple</b>
+          <small>carries a landed grapple into this turn, so strike 1 already has
+          <b>advantage</b>. Switch it off when it escapes, when you let go or when the target
+          drops &mdash; and it ends on its own if you are Incapacitated.</small>
+        </span>
+        <button class="sw" type="button" id="swGrab" aria-pressed="false" aria-label="Toggle whether the target is still grappled by you"></button>
       </div>
     </div>
     <div class="now">
@@ -856,20 +964,16 @@
     <div class="block">
       <h2>The roll</h2>
       <div class="pad">
-        <div class="card-ac">
-          <span class="k">DC</span><span class="ac-val" id="ckDCval">&ndash;</span>
-          <span class="verdict" id="ckVerdict"></span>
-        </div>
-        <div id="ckDCwheel"></div>
-        <div class="wheel-cap">swipe to the DC the DM called</div>
-
         <div class="readout">
           <span class="n empty" id="ckTotal">&ndash;</span>
           <div class="lab" id="ckLab">Total</div>
           <div class="math" id="ckMath">Pick a check above, then the d20 face you rolled</div>
         </div>
         <div id="ckD20wheel"></div>
-        <div class="wheel-cap">swipe to the number you rolled</div>
+        <div class="wheel-cap">tap the number you rolled</div>
+
+        <div id="ckDCwheel"></div>
+        <span class="verdict" id="ckVerdict" hidden></span>
 
         <div class="sect">The formula</div>
         <div id="ckFormula"></div>
@@ -966,7 +1070,9 @@
     ["push","Push","Str save " + MONK_DC]
   ];
 
-  var G = { club:true, reaction:false };
+  /* grappledCarry: a grapple you landed on an earlier turn and are still maintaining,
+     so the advantage is already live on strike 1 of this turn. */
+  var G = { club:true, reaction:false, grappledCarry:false };
   var bankedFocus = 0;
   var uncannyUsed = false;
   var jauntUsed = [false,false];
@@ -1164,75 +1270,84 @@
   ["dIn","dRoll"].forEach(function(id){ $(id).addEventListener("input", paintDeflect); });
 
 
-  /* =============== reusable wheel =============== */
-  function makeWheel(mount, min, max, w, onPick, label){
-    var wrap = el("div","wheel-wrap" + (w === 44 ? " ac" : ""));
-    var wheel = el("div","wheel");
-    wheel.setAttribute("role","listbox");
-    wheel.setAttribute("aria-label", label || "value");
-    for(var v = min; v <= max; v++){
-      var t = el("button","tick", String(v));
-      t.type = "button"; t.dataset.v = v; t.setAttribute("role","option");
-      wheel.appendChild(t);
+  /* =============== reusable d20 face grid =============== */
+  /* A 5-wide grid of buttons, 1 to 20. Nat 1 and nat 20 get their own treatment. */
+  function makeFaceGrid(mount, onPick, opts){
+    opts = opts || {};
+    var grid = el("div","facegrid" + (opts.ck ? " ck" : ""));
+    grid.setAttribute("role","listbox");
+    grid.setAttribute("aria-label", opts.label || "d20 face");
+    for(var v = 1; v <= 20; v++){
+      var b = el("button","face", String(v));
+      b.type = "button"; b.dataset.v = v; b.setAttribute("role","option");
+      grid.appendChild(b);
     }
-    wrap.appendChild(wheel);
-    var frame = el("div","wheel-frame");
-    wrap.appendChild(frame);
-    wrap.appendChild(el("div","fade l"));
-    wrap.appendChild(el("div","fade r"));
-    mount.appendChild(wrap);
+    mount.appendChild(grid);
 
-    var val = null, lock = false, timer = null;
-    function repad(){
-      var cw = wheel.clientWidth; if(!cw) return;
-      var side = Math.max(0, (cw - w) / 2);
-      wheel.style.paddingLeft = side + "px";
-      wheel.style.paddingRight = side + "px";
-      center(val === null ? Math.round((min + max) / 2) : val, "auto");
-    }
-    function center(v, behavior){
-      var t = wheel.querySelector('.tick[data-v="' + v + '"]'); if(!t) return;
-      lock = true;
-      var left = t.offsetLeft - wheel.clientWidth / 2 + w / 2;
-      if(wheel.scrollTo) wheel.scrollTo({ left:left, behavior:behavior || "smooth" });
-      else wheel.scrollLeft = left;
-      setTimeout(function(){ lock = false; }, 260);
-    }
-    function nearest(){
-      var mid = wheel.scrollLeft + wheel.clientWidth / 2, best = null, bd = Infinity;
-      Array.prototype.forEach.call(wheel.children, function(t){
-        var dd = Math.abs(t.offsetLeft + w / 2 - mid);
-        if(dd < bd){ bd = dd; best = t; }
-      });
-      return best;
-    }
+    var val = null;
     function paint(){
-      Array.prototype.forEach.call(wheel.children, function(t){
-        var v = parseInt(t.dataset.v,10);
-        t.className = "tick" + (v === val ? " sel" + ((max === 20 && (v === 20 || v === 1)) ? " hot" : "") : "") +
-          (val !== null && Math.abs(v - val) === 1 ? " near" : "");
-        t.setAttribute("aria-selected", v === val ? "true" : "false");
+      Array.prototype.forEach.call(grid.children, function(b){
+        var v = parseInt(b.dataset.v,10);
+        var c = "face";
+        if(v === val){
+          c += " sel";
+          if(!opts.ck && v === 20) c += " hot";
+          if(!opts.ck && v === 1)  c += " cold";
+        }
+        b.className = c;
+        b.setAttribute("aria-selected", v === val ? "true" : "false");
       });
-      frame.className = "wheel-frame" + (val === null ? "" : " live");
     }
-    function pick(v){ val = v; paint(); if(onPick) onPick(v); }
-    wheel.addEventListener("scroll", function(){
-      if(lock) return;
-      clearTimeout(timer);
-      timer = setTimeout(function(){
-        var t = nearest(); if(!t) return;
-        var v = parseInt(t.dataset.v,10);
-        if(v !== val) pick(v);
-      }, 90);
-    }, { passive:true });
-    wheel.addEventListener("click", function(e){
-      var t = e.target.closest(".tick"); if(!t) return;
-      var v = parseInt(t.dataset.v,10);
-      center(v); pick(v);
+    grid.addEventListener("click", function(e){
+      var b = e.target.closest(".face"); if(!b) return;
+      var v = parseInt(b.dataset.v,10);
+      val = (val === v) ? null : v;     // tap the live face again to clear it
+      paint(); if(onPick) onPick(val);
     });
-    window.addEventListener("resize", repad);
-    repad(); paint();
-    return { get:function(){ return val; }, repad:repad, reset:function(){ val = null; paint(); } };
+    paint();
+    return {
+      get:    function(){ return val; },
+      set:    function(v){ val = v; paint(); },
+      reset:  function(){ val = null; paint(); },
+      repaint:paint
+    };
+  }
+
+  /* =============== reusable DC / AC dropdown =============== */
+  function makeDCSelect(mount, min, max, labelText, onPick, opts){
+    opts = opts || {};
+    var rowEl = el("div","dcpick");
+    rowEl.appendChild(el("span","k", labelText));
+    var sel = document.createElement("select");
+    sel.className = "dcsel";
+    sel.setAttribute("aria-label", labelText);
+    var ph = document.createElement("option");
+    ph.value = ""; ph.textContent = opts.placeholder || "Set –"; sel.appendChild(ph);
+    for(var v = min; v <= max; v++){
+      var o = document.createElement("option");
+      o.value = v; o.textContent = v; sel.appendChild(o);
+    }
+    if(opts.trailing) rowEl.appendChild(opts.trailing);
+    rowEl.appendChild(sel);
+    mount.appendChild(rowEl);
+
+    var val = null;
+    function paint(){
+      sel.value = (val === null) ? "" : String(val);
+      sel.className = "dcsel" + (val === null ? "" : " live");
+    }
+    sel.addEventListener("change", function(){
+      val = sel.value === "" ? null : parseInt(sel.value,10);
+      paint(); if(onPick) onPick(val);
+    });
+    paint();
+    return {
+      get:    function(){ return val; },
+      set:    function(v){ val = v; paint(); },
+      reset:  function(){ val = null; paint(); },
+      repaint:paint,
+      node:   rowEl
+    };
   }
 
   /* =============== checks, saves and skills =============== */
@@ -1298,7 +1413,6 @@
 
     var labelKind = { save:"saving throw", abil:"ability check", skill:"skill check", tool:"tool check" }[ck.kind] || "";
     $("ckPicked").textContent = ck.name ? (ck.name + " " + labelKind) : "nothing picked";
-    $("ckDCval").textContent = (ck.dc === null) ? "\u2013" : ck.dc;
 
     var rows = "", total = null;
     if(!ck.name){
@@ -1340,8 +1454,13 @@
     }
   }
 
-  var ckDC  = makeWheel($("ckDCwheel"), 5, 30, 44, function(v){ ck.dc = v; paintChecks(); }, "Difficulty class");
-  var ckD20 = makeWheel($("ckD20wheel"), 1, 20, 52, function(v){ ck.face = v; paintChecks(); }, "d20 face");
+  var ckD20 = makeFaceGrid($("ckD20wheel"), function(v){ ck.face = v; paintChecks(); },
+                           { ck:true, label:"d20 face" });
+  var ckVd  = $("ckVerdict");
+  ckVd.hidden = false;
+  var ckDC  = makeDCSelect($("ckDCwheel"), 5, 30, "DC the DM called",
+                           function(v){ ck.dc = v; paintChecks(); },
+                           { placeholder:"Set DC", trailing:ckVd });
 
   /* =============== tabs =============== */
   function showTab(which){
@@ -1355,7 +1474,7 @@
     document.body.style.paddingBottom = onRoll
       ? "calc(150px + env(safe-area-inset-bottom))"
       : "calc(24px + env(safe-area-inset-bottom))";
-    if(!onRoll){ ckDC.repad(); ckD20.repad(); }
+    if(!onRoll){ ckDC.repaint(); ckD20.repaint(); }
     if(window.scrollTo) try{ window.scrollTo({ top:0, behavior:"smooth" }); }catch(e){}
   }
   $("tabRoll").addEventListener("click", function(){ showTab("roll"); });
@@ -1393,7 +1512,7 @@
 
   /* =============== attack card =============== */
   function makeCard(after){
-    var state = { face:null, grapple:false, oh:null };
+    var state = { face:null, grapple:false, oh:null, grabResult:null };
 
     var card = el("div","block");
 
@@ -1461,51 +1580,48 @@
     readout.appendChild(math);
     atkZone.appendChild(readout);
 
-    /* target AC */
-    var acRow = el("div","card-ac");
-    var acShow = el("span","ac-val","\u2013");
+    /* d20 face grid, then the target AC dropdown beneath it */
+    var faceMount = el("div");
+    atkZone.appendChild(faceMount);
+
+    /* "roll 2d20 and take the higher" — shown once a grapple has landed before this strike */
+    var advBar = el("div","advbar hide");
+    advBar.appendChild(el("span","at","Advantage"));
+    var advTxt = el("span","ax");
+    advBar.appendChild(advTxt);
+    atkZone.insertBefore(advBar, readout);
+
+    var faceCap = el("div","wheel-cap","tap the number you rolled");
+    atkZone.appendChild(faceCap);
+
+    var acMount = el("div");
+    atkZone.appendChild(acMount);
     var acVerdict = el("span","verdict");
-    acRow.appendChild(el("span","k","Target AC"));
-    acRow.appendChild(acShow); acRow.appendChild(acVerdict);
-    atkZone.appendChild(acRow);
-
-    var acWrap = el("div","wheel-wrap ac");
-    var acWheel = el("div","wheel");
-    acWheel.setAttribute("role","listbox");
-    acWheel.setAttribute("aria-label","Target armor class");
-    for(var av = 5; av <= 30; av++){
-      var at = el("button","tick", String(av));
-      at.type="button"; at.dataset.v = av; at.setAttribute("role","option");
-      acWheel.appendChild(at);
-    }
-    acWrap.appendChild(acWheel);
-    var acFrame = el("div","wheel-frame");
-    acWrap.appendChild(acFrame);
-    acWrap.appendChild(el("div","fade l"));
-    acWrap.appendChild(el("div","fade r"));
-    atkZone.appendChild(acWrap);
-
-    /* d20 */
-    var ww = el("div","wheel-wrap");
-    var wheel = el("div","wheel");
-    wheel.setAttribute("role","listbox");
-    wheel.setAttribute("aria-label","d20 face");
-    for(var i = 1; i <= 20; i++){
-      var t = el("button","tick", String(i));
-      t.type="button"; t.dataset.v = i; t.setAttribute("role","option");
-      wheel.appendChild(t);
-    }
-    ww.appendChild(wheel);
-    var frame = el("div","wheel-frame");
-    ww.appendChild(frame);
-    ww.appendChild(el("div","fade l"));
-    ww.appendChild(el("div","fade r"));
-    atkZone.appendChild(ww);
-    atkZone.appendChild(el("div","wheel-cap","swipe to the number you rolled"));
 
     var attackNote = el("div");
     atkZone.appendChild(attackNote);
     pad.appendChild(atkZone);
+
+    /* did the grapple land? Grappler's Attack Advantage rides on this answer,
+       so it sits right under the roll, ahead of the read-aloud block. */
+    var gres  = el("div","gres hide");
+    var gresQ = el("div","gq","Did the grapple land?");
+    var gresB = el("div","gbtns");
+    var gWin  = el("button","gb win",
+      "Grappled<small>it failed the save</small>");
+    var gLose = el("button","gb lose",
+      "It saved<small>no grapple</small>");
+    gWin.type = "button"; gLose.type = "button";
+    gWin.dataset.v = "landed"; gLose.dataset.v = "saved";
+    gresB.appendChild(gWin); gresB.appendChild(gLose);
+    gres.appendChild(gresQ); gres.appendChild(gresB);
+    [gWin, gLose].forEach(function(b){
+      b.addEventListener("click", function(){
+        state.grabResult = (state.grabResult === b.dataset.v) ? null : b.dataset.v;
+        refreshAll();
+      });
+    });
+    pad.appendChild(gres);
 
     /* the grapple line you read to the DM */
     var grabDM = el("div");
@@ -1633,108 +1749,21 @@
     dmgBar.appendChild(dmgLab); dmgBar.appendChild(dmgN);
     pad.appendChild(dmgBar);
 
-    /* ---- AC wheel ---- */
-    var acVal = null, acLock = false, acTimer = null, AW = 44;
-    function acPad(){
-      var w = acWheel.clientWidth; if(!w) return;
-      var side = Math.max(0,(w - AW)/2);
-      acWheel.style.paddingLeft = side + "px"; acWheel.style.paddingRight = side + "px";
-      acCenter(acVal === null ? 15 : acVal, "auto");
-    }
-    function acCenter(v, behavior){
-      var t = acWheel.querySelector('.tick[data-v="'+v+'"]'); if(!t) return;
-      acLock = true;
-      var left = t.offsetLeft - acWheel.clientWidth/2 + AW/2;
-      if(acWheel.scrollTo) acWheel.scrollTo({left:left, behavior:behavior||"smooth"});
-      else acWheel.scrollLeft = left;
-      setTimeout(function(){ acLock = false; }, 260);
-    }
-    function acNearest(){
-      var mid = acWheel.scrollLeft + acWheel.clientWidth/2, best=null, bd=Infinity;
-      Array.prototype.forEach.call(acWheel.children, function(t){
-        var dd = Math.abs(t.offsetLeft + AW/2 - mid);
-        if(dd < bd){ bd = dd; best = t; }
-      });
-      return best;
-    }
-    function acPaint(){
-      Array.prototype.forEach.call(acWheel.children, function(t){
-        var v = parseInt(t.dataset.v,10);
-        t.className = "tick" + (v === acVal ? " sel" : "") +
-          (acVal !== null && Math.abs(v-acVal) === 1 ? " near" : "");
-        t.setAttribute("aria-selected", v === acVal ? "true":"false");
-      });
-      acFrame.className = "wheel-frame" + (acVal === null ? "" : " live");
-      acShow.textContent = (acVal === null) ? "\u2013" : acVal;
-    }
-    function acPick(v){
+    /* ---- d20 face grid ---- */
+    var faceGrid = makeFaceGrid(faceMount, function(v){
+      state.face = v;
+      refreshAll();
+    }, { label:"d20 face" });
+    function paintTicks(){ faceGrid.set(state.face); }
+
+    /* ---- target AC dropdown, with the hit / miss verdict on the same line ---- */
+    var acVal = null;
+    var acSel = makeDCSelect(acMount, 5, 30, "Target AC", function(v){
       acVal = v; acPaint();
       cards.forEach(function(o){ if(o !== card) o.setAC(v); });
       refreshAll();
-    }
-    acWheel.addEventListener("scroll", function(){
-      if(acLock) return;
-      clearTimeout(acTimer);
-      acTimer = setTimeout(function(){
-        var t = acNearest(); if(!t) return;
-        var v = parseInt(t.dataset.v,10);
-        if(v !== acVal) acPick(v);
-      }, 90);
-    }, {passive:true});
-    acWheel.addEventListener("click", function(e){
-      var t = e.target.closest(".tick"); if(!t) return;
-      var v = parseInt(t.dataset.v,10);
-      acCenter(v); acPick(v);
-    });
-
-    /* ---- d20 wheel ---- */
-    var lockScroll = false, scrollTimer;
-    function padWheel(){
-      var w = wheel.clientWidth; if(!w) return;
-      var side = Math.max(0,(w-52)/2);
-      wheel.style.paddingLeft = side+"px"; wheel.style.paddingRight = side+"px";
-      centerOn(state.face || 10, "auto");
-    }
-    function centerOn(v, behavior){
-      var t = wheel.querySelector('.tick[data-v="'+v+'"]'); if(!t) return;
-      lockScroll = true;
-      var left = t.offsetLeft - wheel.clientWidth/2 + 26;
-      if(wheel.scrollTo) wheel.scrollTo({left:left, behavior:behavior||"smooth"});
-      else wheel.scrollLeft = left;
-      setTimeout(function(){ lockScroll = false; }, 260);
-    }
-    function nearestTick(){
-      var mid = wheel.scrollLeft + wheel.clientWidth/2, best=null, bd=Infinity;
-      Array.prototype.forEach.call(wheel.children, function(t){
-        var dd = Math.abs(t.offsetLeft + 26 - mid);
-        if(dd < bd){ bd = dd; best = t; }
-      });
-      return best;
-    }
-    function paintTicks(){
-      var s = state.face;
-      Array.prototype.forEach.call(wheel.children, function(t){
-        var v = parseInt(t.dataset.v,10);
-        t.className = "tick" + (v === s ? " sel" + ((v===1||v===20) ? " hot":"") : "") +
-          (s && Math.abs(v-s) === 1 ? " near" : "");
-        t.setAttribute("aria-selected", v === s ? "true":"false");
-      });
-      frame.className = "wheel-frame" + (s ? " live" : "");
-    }
-    wheel.addEventListener("scroll", function(){
-      if(lockScroll) return;
-      clearTimeout(scrollTimer);
-      scrollTimer = setTimeout(function(){
-        var t = nearestTick(); if(!t) return;
-        var v = parseInt(t.dataset.v,10);
-        if(v !== state.face){ state.face = v; paintTicks(); refreshAll(); }
-      }, 90);
-    }, {passive:true});
-    wheel.addEventListener("click", function(e){
-      var t = e.target.closest(".tick"); if(!t) return;
-      state.face = parseInt(t.dataset.v,10);
-      centerOn(state.face); paintTicks(); refreshAll();
-    });
+    }, { placeholder:"Set AC", trailing:acVerdict });
+    function acPaint(){ acSel.set(acVal); }
 
     /* ---- recalc ---- */
     card.recalc = function(){
@@ -1805,7 +1834,7 @@
         bigN.textContent = "\u2013"; bigN.className = "n empty";
         math.innerHTML = am.parts.length ? "ready: " + am.parts.join(" \u00b7 ")
                                          : "Pick the d20 face you rolled";
-        readout.className = "readout";
+        readout.className = "readout blank";
         acVerdict.className = "verdict"; acVerdict.textContent = "";
         attackNote.innerHTML = "";
       } else {
@@ -1829,6 +1858,48 @@
                     'Flat modifiers are not doubled.</span></div>'
         : "";
       }
+
+      /* ---- Grappler: did the grapple land, and does this strike ride on one? ---- */
+      // Live the moment a grapple is on the table \u2014 a plain Grapple or Punch and Grab.
+      // Punch and Grab needs the hit first by the rules, so the question says so rather
+      // than hiding itself and leaving you wondering where it went.
+      var canGrab = grabbing || isPNG;
+      if(!canGrab && state.grabResult) state.grabResult = null;
+      gres.className = "gres" + (canGrab ? "" : " hide") +
+                       (state.grabResult ? " settled" : "") +
+                       (state.grabResult === "landed" ? " win" : "");
+      // Punch and Grab is a punch with a grab bolted onto the hit, not two attempts:
+      // the question walks the three states so the rule is on screen, not in your head.
+      var pngResolved = isPNG && f !== null && (ac !== null || f === 20 || f === 1);
+      gresQ.textContent = grabbing
+        ? "Did the grapple land? \u2014 DC " + GRAPPLE_DC + " Str or Dex save"
+        : !pngResolved
+          ? "Punch has to land first \u2014 then a DC " + GRAPPLE_DC + " Str or Dex save"
+          : didHit
+            ? "Punch landed \u2014 did the grab? DC " + GRAPPLE_DC + " Str or Dex save"
+            : "The punch missed \u2014 no grab";
+      // Punch and Grab bolts the grab onto the Damage option, so a missed punch grabs nothing
+      var pngMissed = isPNG && pngResolved && !didHit;
+      if(pngMissed && state.grabResult) state.grabResult = null;
+      gWin.disabled = gLose.disabled = pngMissed;
+      gres.classList.toggle("dead", pngMissed);
+      gWin.className  = "gb win"  + (state.grabResult === "landed" ? " on" : "");
+      gLose.className = "gb lose" + (state.grabResult === "saved"  ? " on" : "");
+      gWin.setAttribute("aria-pressed",  state.grabResult === "landed" ? "true" : "false");
+      gLose.setAttribute("aria-pressed", state.grabResult === "saved"  ? "true" : "false");
+
+      // Attack Advantage rides every attack roll made after the grapple landed.
+      // A Grapple itself has no attack roll, so there is nothing to apply it to.
+      var advLive = !grabbing && advActiveFor(card);
+      card._adv = advLive;
+      advBar.className = "advbar" + (advLive ? "" : " hide");
+      if(advLive){
+        advTxt.innerHTML = "It is <b>Grappled by you</b> \u2014 roll <b>2d20 and tap the higher</b>. " +
+          "Grappler's Attack Advantage, and it is <b>yours alone</b>: your allies get nothing from it.";
+      }
+      faceCap.className = "wheel-cap" + (advLive ? " adv" : "");
+      faceCap.textContent = advLive ? "roll twice \u00b7 tap the higher face"
+                                    : "tap the number you rolled";
 
       /* the line to read out loud */
       grabDM.innerHTML = grabbing
@@ -1941,24 +2012,29 @@
       return isNaN(v) ? null : v;
     };
     card.clearRolls = function(){
-      state.face = null; paintTicks(); centerOn(10,"auto");
+      state.face = null; paintTicks();
       dieRows.forEach(function(e){ e.main.value = null; e.crit.value = null; });
       state.oh = null;
       Array.prototype.forEach.call(ohB.children, function(x){ x.className = ""; });
       state.grapple = false; grabCb.checked = false;
+      state.grabResult = null;
     };
     card.getAC = function(){ return acVal; };
     card.setAC = function(v){
       if(v === null || acVal !== null) return;
-      acVal = v; acCenter(v,"auto"); acPaint();
+      acVal = v; acPaint();
     };
     card.getType = function(){ return state.type; };
     card.setType = function(v){ state.type = v; paintType(); };
     card.lockType = function(on){ stype.classList.toggle("locked", !!on); };
     card.isGrapple = function(){ return state.grapple; };
+    card.grappleLanded = function(){ return state.grabResult === "landed"; };
+    card.grappleResult = function(){ return state.grabResult; };
     card.getOH = function(){ return state.oh; };
     card.setIndex = function(n){
-      idx.textContent = "Strike " + n + (card.groupId ? " \u00b7 Flurry " + card.part + " of 2" : "");
+      idx.innerHTML = "Strike " + n +
+        (card.groupId ? " \u00b7 Flurry " + card.part + " of 2" : "") +
+        (card._adv ? '<span class="advtag">\u00b7 ADV</span>' : "");
     };
     card.setRemovable = function(on){ kill.className = "kill" + (on ? "" : " hidden"); };
     card.groupId = null; card.part = null;
@@ -1967,21 +2043,20 @@
       var doomed = card.groupId
         ? cards.filter(function(c){ return c.groupId === card.groupId; })
         : [card];
-      if(doomed.length >= cards.length) return;
+      if(cards.length && cards[0].getAC() !== null) lastAC = cards[0].getAC();
       cards = cards.filter(function(c){ return doomed.indexOf(c) === -1; });
       doomed.forEach(function(c){ c.remove(); });
       renumber(); refreshAll();
     });
 
-    if(cards.length) card.setAC(cards[0].getAC());
+    card.setAC(cards.length ? cards[0].getAC() : lastAC);
     if(after && after.parentNode === host){
       host.insertBefore(card, after.nextSibling);
       cards.splice(cards.indexOf(after)+1, 0, card);
     } else {
       host.appendChild(card); cards.push(card);
     }
-    padWheel(); acPad(); acPaint(); paintTicks();
-    window.addEventListener("resize", function(){ padWheel(); acPad(); });
+    acPaint(); paintTicks();
     return card;
   }
 
@@ -2015,6 +2090,9 @@
       var pairLocked = c.groupId && cards.filter(function(x){ return x.groupId === c.groupId; }).length;
       c.setRemovable(cards.length > (pairLocked || 1));
     });
+    // every strike can be removed now that a turn is allowed to hold none
+    if(cards.length === 1) cards[0].setRemovable(true);
+    $("noStrikes").hidden = cards.length > 0;
   }
 
   /* =============== turn readout =============== */
@@ -2156,9 +2234,11 @@
       b.className = ""; b.setAttribute("aria-pressed","false");
     });
     lastTurn = null; bestTurn = null;
-    G.club = true; G.reaction = false;
+    G.club = true; G.reaction = false; G.grappledCarry = false;
+    lastAC = null;
     $("swClub").setAttribute("aria-pressed","true");
     $("effClub").className = "eff";
+    paintGrabCarry();
     $("dIn").value = ""; $("dRoll").value = "";
     paintDeflect();
     ck = { name:null, abil:null, prof:false, kind:"", dc:null, face:null };
@@ -2166,6 +2246,32 @@
     showTab("roll");
     freshTurn(); renderHistory();
   }
+
+  /* Grappler's Attack Advantage is live for a strike once a grapple has landed —
+     either on an earlier card this turn, or on an earlier turn you are still holding. */
+  function advActiveFor(card){
+    if(G.grappledCarry) return true;
+    var i = cards.indexOf(card);
+    if(i < 0) return false;
+    for(var j = 0; j < i; j++){
+      if(cards[j].grappleLanded()) return true;
+    }
+    return false;
+  }
+
+  /* Did any strike this turn land a grapple? */
+  function grappleLandedThisTurn(){
+    return cards.some(function(c){ return c.grappleLanded(); });
+  }
+
+  function paintGrabCarry(){
+    $("effGrab").className = "eff" + (G.grappledCarry ? "" : " off");
+    $("swGrab").setAttribute("aria-pressed", G.grappledCarry ? "true" : "false");
+  }
+  $("swGrab").addEventListener("click", function(){
+    G.grappledCarry = !G.grappledCarry;
+    paintGrabCarry(); refreshAll();
+  });
 
   function refreshAll(){
     cards.forEach(function(c){ c.recalc(); });
@@ -2182,12 +2288,13 @@
     $("bestTurn").textContent = (bestTurn === null) ? "\u2013" : bestTurn;
   }
 
+  /* A turn opens with no strike on the table — the first one arrives with
+     "+ Add attack roll". lastAC survives so the next strike inherits the target. */
+  var lastAC = null;
   function freshTurn(){
-    var keepAC = cards.length ? cards[0].getAC() : null;
+    if(cards.length && cards[0].getAC() !== null) lastAC = cards[0].getAC();
     cards.slice().forEach(function(c){ c.remove(); });
     cards = []; G.reaction = false;
-    var fresh = makeCard();
-    if(keepAC !== null) fresh.setAC(keepAC);
     renumber(); refreshAll();
     if(window.scrollTo) try{ window.scrollTo({top:0, behavior:"smooth"}); }catch(e){}
   }
@@ -2230,6 +2337,11 @@
         faces: r.faces.concat(r.critFaces)
       });
     });
+    // a grapple that landed this turn is still held at the top of the next one,
+    // so the advantage carries over until you switch it off
+    if(grappleLandedThisTurn()) G.grappledCarry = true;
+    paintGrabCarry();
+
     history.push(entry);
     renderHistory();
     freshTurn();
@@ -2264,7 +2376,7 @@
   }, true);
 
   (function boot(){
-    makeCard(); renumber(); refreshAll(); renderHistory(); paintDeflect();
+    renumber(); refreshAll(); renderHistory(); paintDeflect();
     buildChecks();
     sessionDay = today();
     $("gateLine").innerHTML = "Ready to play &middot; " + sessionDay +
