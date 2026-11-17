@@ -597,9 +597,23 @@
 
   .dmg-bar{
     display:flex;align-items:center;justify-content:space-between;gap:10px;
-    margin:14px -12px -12px;padding:12px;border-top:1px solid var(--line);
+    margin:14px -12px 0;padding:12px;border-top:1px solid var(--line);
     background:var(--panel-2);
   }
+  /* the card's own footer — start the next strike without scrolling back up */
+  .card-foot{
+    margin:0 -12px -12px;padding:12px;background:var(--panel-2);
+    border-top:1px solid var(--line-soft);
+  }
+  .card-foot .addatk{margin-bottom:0;}
+  .card-foot .addatk[hidden]{display:none;}
+  .foot-note{
+    font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.06em;
+    color:var(--dim);line-height:1.6;text-align:center;
+  }
+  .foot-note[hidden]{display:none;}
+  .foot-note b{color:var(--mute);}
+  .dmg-bar[hidden] + .card-foot{border-top:1px solid var(--line);margin-top:14px;}
   .dmg-bar .lab{
     font-family:"IBM Plex Mono",monospace;font-size:9px;letter-spacing:.14em;
     text-transform:uppercase;color:var(--dim);line-height:1.6;
@@ -607,14 +621,14 @@
   .dmg-bar .n{font-weight:900;font-size:32px;letter-spacing:-.025em;line-height:1;font-style:italic;}
   .dmg-bar .n.empty{color:var(--line);}
 
-  #addAttack{
+  .addatk{
     appearance:none;width:100%;background:var(--pink);border:1px solid var(--pink);
     border-radius:7px;color:#2A0012;font-family:"IBM Plex Mono",monospace;
     font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
     padding:16px;cursor:pointer;margin-bottom:14px;
     box-shadow:0 0 18px rgba(255,45,149,.3);
   }
-  #addAttack:active{background:var(--pink-hi);border-color:var(--pink-hi);}
+  .addatk:active{background:var(--pink-hi);border-color:var(--pink-hi);}
 
   .empty-strikes{
     border:1px dashed var(--line);border-radius:10px;
@@ -748,6 +762,11 @@
   .sbtn.on em{color:#5E0030;}
   .stype.locked .sbtn{opacity:.45;cursor:default;}
   .stype.locked .sbtn.on{opacity:1;}
+  /* that slot is already spent on another strike this turn */
+  .sbtn.spent{
+    opacity:.34;cursor:not-allowed;background:transparent;border-style:dashed;
+  }
+  .sbtn.spent .t{text-decoration:line-through;}
 
   /* ---------- tabs ---------- */
   .tabs{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:14px;}
@@ -841,7 +860,7 @@
 
   <div id="paneRoll">
 
-  <button id="addAttack" type="button">+ Add attack roll</button>
+  <button id="addAttack" class="addatk" type="button">+ Add attack roll</button>
   <div id="attacks"></div>
   <div id="noStrikes" class="empty-strikes">
     <b>No strike on the table.</b>
@@ -1529,11 +1548,12 @@
     stype.setAttribute("role","group");
     stype.setAttribute("aria-label","Strike type");
     STRIKE_TYPES.forEach(function(t){
-      var b = el("button","sbtn", t[1] + "<em>" + t[2] + "</em>");
+      var b = el("button","sbtn", "<span class=\"t\">" + t[1] + "</span><em>" + t[2] + "</em>");
       b.type = "button"; b.dataset.v = t[0];
       b.setAttribute("aria-pressed","false");
       b.addEventListener("click", function(){
         if(stype.classList.contains("locked")) return;
+        if(b.disabled) return;
         state.type = (state.type === t[0]) ? UNSET : t[0];
         paintType();
         onTypeChange(card);
@@ -1542,11 +1562,21 @@
     });
     function paintType(){
       Array.prototype.forEach.call(stype.children, function(b){
-        var on = (b.dataset.v === state.type);
-        b.className = "sbtn" + (on ? " on" : "");
+        var on  = (b.dataset.v === state.type);
+        // one Attack action and one bonus action a turn: if another strike already
+        // holds that slot, this card cannot take it too
+        var out = !on && slotHeldByOther(card, cfg(b.dataset.v).slot);
+        b.className = "sbtn" + (on ? " on" : "") + (out ? " spent" : "");
+        b.disabled = out;
         b.setAttribute("aria-pressed", on ? "true" : "false");
+        b.title = out
+          ? (cfg(b.dataset.v).slot === "action"
+              ? "Your Attack action is already spent this turn"
+              : "Your bonus action is already spent this turn")
+          : "";
       });
     }
+    card.paintType = paintType;
     paintType();
     top.appendChild(stype);
 
@@ -1749,6 +1779,22 @@
     dmgBar.appendChild(dmgLab); dmgBar.appendChild(dmgN);
     pad.appendChild(dmgBar);
 
+    /* the card's own footer: start the next strike without scrolling back up.
+       It drops the new card directly beneath this one, so it lands where you are. */
+    var foot = el("div","card-foot");
+    var footAdd = el("button","addatk","+ Add attack roll");
+    footAdd.type = "button";
+    footAdd.addEventListener("click", function(){
+      // on a Flurry pair, slot the new strike after the whole pair, never between them
+      var anchor = card, p = partnerOf(card);
+      if(p && cards.indexOf(p) > cards.indexOf(card)) anchor = p;
+      makeCard(anchor); renumber(); refreshAll();
+    });
+    foot.appendChild(footAdd);
+    var footNote = el("div","foot-note");
+    foot.appendChild(footNote);
+    pad.appendChild(foot);
+
     /* ---- d20 face grid ---- */
     var faceGrid = makeFaceGrid(faceMount, function(v){
       state.face = v;
@@ -1767,6 +1813,7 @@
 
     /* ---- recalc ---- */
     card.recalc = function(){
+      paintType();          // slot availability depends on the other strikes
       var f = state.face;
       var isCrit = (f === 20);
       var type = state.type;
@@ -1900,6 +1947,16 @@
       faceCap.className = "wheel-cap" + (advLive ? " adv" : "");
       faceCap.textContent = advLive ? "roll twice \u00b7 tap the higher face"
                                     : "tap the number you rolled";
+
+      /* Nothing left to spend means nothing left to add \u2014 the action and the bonus
+         are both gone, which is where the second half of a Flurry usually leaves you. */
+      var spent = economySpent();
+      footAdd.hidden = spent;
+      footNote.hidden = !spent;
+      if(spent){
+        footNote.innerHTML = "Action and bonus action both spent \u2014 " +
+          "<b>that is the turn</b>. Your reaction is still open.";
+      }
 
       /* the line to read out loud */
       grabDM.innerHTML = grabbing
@@ -2058,6 +2115,42 @@
     }
     acPaint(); paintTicks();
     return card;
+  }
+
+  /* =============== action economy gating =============== */
+  /* At level 4 a turn holds one Attack action and one bonus action. Flurry is a pair
+     of strikes on a single bonus action, so both halves count as the one slot. */
+  function slotUse(skip){
+    skip = skip || [];
+    var action = 0, bonus = 0, groups = [];
+    cards.forEach(function(c){
+      if(skip.indexOf(c) !== -1) return;
+      var t = c.getType(); if(!t) return;
+      var k = cfg(t);
+      if(k.slot === "action"){ action++; return; }
+      if(k.paired){
+        if(groups.indexOf(c.groupId) === -1) groups.push(c.groupId);
+        return;
+      }
+      bonus++;
+    });
+    return { action:action, bonus:bonus + groups.length };
+  }
+
+  /* Is this slot already taken by some OTHER strike on the turn?
+     A Flurry card's partner shares its one bonus action, so it never blocks it. */
+  function slotHeldByOther(card, slot){
+    var skip = [card];
+    var p = partnerOf(card);
+    if(p) skip.push(p);
+    var u = slotUse(skip);
+    return slot === "action" ? u.action >= 1 : u.bonus >= 1;
+  }
+
+  /* Nothing left to spend, so there is nothing to add. */
+  function economySpent(){
+    var u = slotUse();
+    return u.action >= 1 && u.bonus >= 1;
   }
 
   /* =============== pairing =============== */
@@ -2368,8 +2461,7 @@
   $("gateNew").addEventListener("click", function(){ startSession(); $("gate").hidden = true; });
   $("gateResume").addEventListener("click", function(){ $("gate").hidden = true; });
   $("addAttack").addEventListener("click", function(){
-    var c = makeCard(); renumber(); refreshAll();
-    if(c.scrollIntoView) c.scrollIntoView({behavior:"smooth", block:"start"});
+    makeCard(); renumber(); refreshAll();   // no scrolling — the page stays where you left it
   });
   document.addEventListener("click", function(e){
     if(armed && !armed.el.contains(e.target)) disarm();
